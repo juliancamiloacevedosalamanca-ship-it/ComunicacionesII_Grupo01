@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" font-family="DejaVu Sans, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1d4ed8"/></marker>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e5e7eb"/><stop offset="1" stop-color="#cbd5e1"/></linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0 L0 0 0 40" fill="none" stroke="#94a3b8" stroke-width="0.6" opacity="0.5"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="#ffffff"/>
+  <text x="40" y="52" font-size="30" font-weight="bold" fill="#0f172a">Escenario S1 · Telemetría industrial bajo perturbaciones impulsivas</text>
+  <text x="40" y="84" font-size="18" fill="#475569">Planta de proceso: el nodo sensor (Tx) envía temperatura, vibración y estado de la máquina a la sala de supervisión (Rx). Grupo 1 · Comunicaciones II</text>
+
+  <!-- building -->
+  <rect x="40" y="110" width="1520" height="620" rx="6" fill="url(#floor)" stroke="#334155" stroke-width="4"/>
+  <rect x="40" y="110" width="1520" height="620" fill="url(#grid)"/>
+  <!-- control room wall -->
+  <rect x="1180" y="110" width="380" height="620" fill="#eef2ff" stroke="#334155" stroke-width="4"/>
+  <rect x="1176" y="380" width="8" height="90" fill="#93c5fd"/>
+  <text x="1370" y="146" font-size="20" font-weight="bold" fill="#1e3a8a" text-anchor="middle">Sala de supervisión</text>
+  <text x="140" y="146" font-size="20" font-weight="bold" fill="#334155">Área de producción</text>
+
+  <!-- shelves / rack -->
+  <g>
+    <rect x="70" y="600" width="260" height="100" fill="#d6d3d1" stroke="#57534e" stroke-width="2"/>
+    <line x1="70" y1="633" x2="330" y2="633" stroke="#57534e" stroke-width="2"/>
+    <line x1="70" y1="666" x2="330" y2="666" stroke="#57534e" stroke-width="2"/>
+    <rect x="85" y="606" width="40" height="24" fill="#a16207"/><rect x="140" y="606" width="55" height="24" fill="#a16207"/><rect x="230" y="639" width="60" height="24" fill="#a16207"/><rect x="95" y="672" width="70" height="24" fill="#a16207"/>
+    <text x="200" y="720" font-size="15" fill="#44403c" text-anchor="middle">Estantería metálica</text>
+  </g>
+
+  <!-- tank -->
+  <g>
+    <rect x="80" y="200" width="120" height="190" rx="18" fill="#cbd5e1" stroke="#475569" stroke-width="3"/>
+    <ellipse cx="140" cy="200" rx="60" ry="14" fill="#e2e8f0" stroke="#475569" stroke-width="3"/>
+    <rect x="200" y="300" width="70" height="12" fill="#64748b"/>
+    <text x="140" y="415" font-size="15" fill="#334155" text-anchor="middle">Tanque de proceso</text>
+  </g>
+
+  <!-- motor 1 + conveyor (machine with Tx) -->
+  <g>
+    <rect x="330" y="420" width="420" height="40" rx="18" fill="#475569" stroke="#1e293b" stroke-width="3"/>
+    <circle cx="360" cy="440" r="14" fill="#94a3b8"/><circle cx="720" cy="440" r="14" fill="#94a3b8"/>
+    <rect x="360" y="400" width="60" height="20" fill="#f59e0b"/><rect x="470" y="396" width="70" height="24" fill="#f59e0b"/><rect x="600" y="402" width="55" height="18" fill="#f59e0b"/>
+    <rect x="345" y="460" width="20" height="70" fill="#334155"/><rect x="715" y="460" width="20" height="70" fill="#334155"/>
+    <!-- motor -->
+    <rect x="760" y="415" width="110" height="60" rx="10" fill="#2563eb" stroke="#1e3a8a" stroke-width="3"/>
+    <line x1="775" y1="425" x2="775" y2="465" stroke="#93c5fd" stroke-width="3"/><line x1="790" y1="425" x2="790" y2="465" stroke="#93c5fd" stroke-width="3"/><line x1="805" y1="425" x2="805" y2="465" stroke="#93c5fd" stroke-width="3"/>
+    <rect x="740" y="436" width="22" height="18" fill="#64748b"/>
+    <text x="815" y="500" font-size="15" fill="#1e3a8a" text-anchor="middle" font-weight="bold">Motor M1</text>
+    <text x="540" y="555" font-size="15" fill="#334155" text-anchor="middle">Máquina monitoreada (banda transportadora)</text>
+  </g>
+
+  <!-- Tx sensor node on machine -->
+  <g>
+    <rect x="520" y="330" width="70" height="46" rx="6" fill="#16a34a" stroke="#14532d" stroke-width="3"/>
+    <text x="555" y="359" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">Tx</text>
+    <line x1="555" y1="376" x2="555" y2="396" stroke="#14532d" stroke-width="4"/>
+    <line x1="575" y1="330" x2="575" y2="270" stroke="#14532d" stroke-width="4"/>
+    <polygon points="565,270 585,270 575,252" fill="#14532d"/>
+    <text x="470" y="300" font-size="14" fill="#14532d" text-anchor="middle">Nodo sensor</text>
+    <text x="470" y="318" font-size="14" fill="#14532d" text-anchor="middle">+ antena</text>
+  </g>
+
+  <!-- second motor / VFD / contactor cabinet -->
+  <g>
+    <rect x="760" y="560" width="110" height="60" rx="10" fill="#2563eb" stroke="#1e3a8a" stroke-width="3"/>
+    <line x1="775" y1="570" x2="775" y2="610" stroke="#93c5fd" stroke-width="3"/><line x1="790" y1="570" x2="790" y2="610" stroke="#93c5fd" stroke-width="3"/>
+    <text x="815" y="645" font-size="15" fill="#1e3a8a" text-anchor="middle" font-weight="bold">Motor M2 (bomba)</text>
+  </g>
+  <g transform="translate(30,300)">
+    <rect x="930" y="170" width="150" height="200" rx="6" fill="#9ca3af" stroke="#374151" stroke-width="3"/>
+    <rect x="945" y="185" width="120" height="70" fill="#e5e7eb" stroke="#374151"/>
+    <rect x="955" y="195" width="28" height="50" fill="#ef4444"/><rect x="991" y="195" width="28" height="50" fill="#ef4444"/><rect x="1027" y="195" width="28" height="50" fill="#ef4444"/>
+    <rect x="945" y="270" width="120" height="85" fill="#1f2937"/>
+    <rect x="958" y="282" width="60" height="22" fill="#22d3ee"/>
+    <circle cx="1040" cy="293" r="8" fill="#22c55e"/><circle cx="1040" cy="325" r="8" fill="#f97316"/>
+    <text x="1005" y="388" font-size="15" fill="#111827" text-anchor="middle" font-weight="bold">Tablero: contactores K1–K3</text>
+    <text x="1005" y="406" font-size="15" fill="#111827" text-anchor="middle" font-weight="bold">+ variador de frecuencia (VFD)</text>
+    
+  </g>
+
+  <path d="M960,500 C920,500 900,445 870,445" fill="none" stroke="#111827" stroke-width="3" stroke-dasharray="6 4"/>
+  <path d="M960,600 C930,600 900,590 870,590" fill="none" stroke="#111827" stroke-width="3" stroke-dasharray="6 4"/>
+  <!-- Rx station in control room -->
+  <g>
+    <rect x="1300" y="470" width="200" height="90" rx="6" fill="#78716c" stroke="#44403c" stroke-width="3"/>
+    <rect x="1330" y="400" width="120" height="74" rx="6" fill="#0f172a" stroke="#334155" stroke-width="3"/>
+    <polyline points="1340,450 1360,440 1375,455 1395,425 1415,445 1440,430" fill="none" stroke="#22c55e" stroke-width="3"/>
+    <rect x="1240" y="430" width="60" height="44" rx="6" fill="#dc2626" stroke="#7f1d1d" stroke-width="3"/>
+    <text x="1270" y="458" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">Rx</text>
+    <line x1="1255" y1="430" x2="1255" y2="365" stroke="#7f1d1d" stroke-width="4"/>
+    <polygon points="1245,365 1265,365 1255,347" fill="#7f1d1d"/>
+    <text x="1400" y="590" font-size="15" fill="#1e3a8a" text-anchor="middle">Estación de supervisión (SCADA)</text>
+    <rect x="1330" y="620" width="170" height="70" fill="#d6d3d1" stroke="#57534e" stroke-width="2"/>
+    <text x="1415" y="660" font-size="14" fill="#44403c" text-anchor="middle">Rack / gabinete</text>
+  </g>
+
+  <!-- direct propagation path -->
+  <g stroke="#1d4ed8" fill="none" stroke-width="3">
+    <path d="M590,262 Q600,252 590,242" /><path d="M605,272 Q622,252 605,232"/><path d="M620,282 Q645,252 620,222"/>
+    <line x1="640" y1="258" x2="1232" y2="352" marker-end="url(#arr)" stroke-dasharray="14 8"/>
+    <path d="M1238,342 Q1228,352 1238,362"/><path d="M1224,334 Q1208,352 1224,370"/>
+  </g>
+  <text x="700" y="252" font-size="17" fill="#1d4ed8" font-weight="bold" transform="rotate(9 700 252)">Camino directo · señal BPSK (Rs = 32 ksym/s)</text>
+
+  <!-- impulsive bursts -->
+  <g fill="#f59e0b" stroke="#b45309" stroke-width="2">
+    <polygon points="880,395 905,360 895,388 925,380 897,420 905,395"/>
+    <polygon points="1125,515 1165,490 1142,522 1180,524 1135,550 1148,528"/>
+    <polygon points="1125,600 1170,600 1140,618 1175,640 1125,630 1142,620"/>
+    <polygon points="880,545 910,520 898,546 930,548 893,572 902,553"/>
+  </g>
+  <g fill="none" stroke="#f59e0b" stroke-width="3" opacity="0.9">
+    <circle cx="1035" cy="570" r="115" stroke-dasharray="4 10"/>
+    <circle cx="1035" cy="570" r="150" stroke-dasharray="4 14"/>
+    <circle cx="815" cy="445" r="90" stroke-dasharray="4 10"/>
+    <circle cx="815" cy="590" r="80" stroke-dasharray="4 10"/>
+  </g>
+  <rect x="650" y="150" width="500" height="58" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="665" y="174" font-size="16" fill="#b45309" font-weight="bold">Perturbación: impulsos breves de gran amplitud</text>
+  <text x="665" y="196" font-size="16" fill="#b45309">al conmutar contactores K1–K3, el VFD y los motores</text>
+
+  <!-- legend -->
+  <g transform="translate(40,750)">
+    <rect width="1520" height="130" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="20" y="32" font-size="18" font-weight="bold" fill="#0f172a">Leyenda</text>
+    <rect x="20" y="50" width="34" height="24" rx="4" fill="#16a34a"/><text x="64" y="68" font-size="15" fill="#0f172a">Tx: nodo sensor con antena</text>
+    <rect x="20" y="88" width="34" height="24" rx="4" fill="#dc2626"/><text x="64" y="106" font-size="15" fill="#0f172a">Rx: receptor de la estación de supervisión</text>
+    <line x1="400" y1="62" x2="450" y2="62" stroke="#1d4ed8" stroke-width="3" stroke-dasharray="14 8" marker-end="url(#arr)"/><text x="462" y="68" font-size="15" fill="#0f172a">Camino directo de la señal útil</text>
+    <polygon points="410,112 425,90 420,106 440,100 422,126 427,110" fill="#f59e0b" stroke="#b45309"/><circle cx="470" cy="104" r="14" fill="none" stroke="#f59e0b" stroke-width="3" stroke-dasharray="4 6"/><text x="496" y="110" font-size="15" fill="#0f172a">Fuente de impulsos y zona de influencia</text>
+    <rect x="840" y="50" width="34" height="24" rx="4" fill="#2563eb"/><text x="884" y="68" font-size="15" fill="#0f172a">Motores (cargas inductivas)</text>
+    <rect x="840" y="88" width="34" height="24" rx="4" fill="#9ca3af"/><text x="884" y="106" font-size="15" fill="#0f172a">Tablero de contactores y variador</text>
+    <text x="1140" y="68" font-size="15" fill="#0f172a">Modelo en GNU Radio (banda base):</text>
+    <text x="1140" y="90" font-size="15" fill="#0f172a">BPSK + AWGN (0.10) + tren de impulsos</text>
+    <text x="1140" y="112" font-size="15" fill="#0f172a">A_imp = 0 / 0.3 / 0.6 / 1.0, 1 cada 256 muestras</text>
+  </g>
+</svg>
