@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" font-family="DejaVu Sans, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#334155"/></marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b45309"/></marker>
+  </defs>
+  <rect width="1600" height="900" fill="#fff"/>
+  <text x="40" y="52" font-size="30" font-weight="bold" fill="#0f172a">Diagrama técnico del sistema · Tx → canal → visualización</text>
+  <text x="40" y="84" font-size="18" fill="#475569">GRC: Enlace_Beta_Impulsivo_Grupo1.grc (copia de Modulaciones_basadas_en_constelaciones_AWGN.grc) · GNU Radio 3.10</text>
+
+  <!-- zone backgrounds -->
+  <rect x="30" y="120" width="830" height="300" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="50" y="150" font-size="20" font-weight="bold" fill="#166534">TRANSMISOR (Tx) · modulación BPSK</text>
+  <rect x="880" y="120" width="420" height="440" rx="12" fill="#fffbeb" stroke="#f59e0b" stroke-width="2"/>
+  <text x="900" y="150" font-size="20" font-weight="bold" fill="#92400e">CANAL (banda base)</text>
+  <rect x="1320" y="120" width="250" height="440" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+  <text x="1335" y="150" font-size="20" font-weight="bold" fill="#1e3a8a">RECEPTOR</text>
+  <text x="1335" y="172" font-size="15" fill="#1e3a8a">(visualización)</text>
+
+  <g font-size="15" fill="#0f172a">
+    <!-- Tx chain -->
+    <rect x="50" y="180" width="150" height="70" rx="8" fill="#fff" stroke="#334155" stroke-width="2"/><text x="125" y="208" text-anchor="middle" font-weight="bold">Random Source</text><text x="125" y="230" text-anchor="middle">bits 0/1</text>
+    <rect x="240" y="180" width="160" height="70" rx="8" fill="#fff" stroke="#334155" stroke-width="2"/><text x="320" y="208" text-anchor="middle" font-weight="bold">Pack K Bits +</text><text x="320" y="230" text-anchor="middle">Packed→Unpacked</text>
+    <rect x="440" y="180" width="170" height="70" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/><text x="525" y="208" text-anchor="middle" font-weight="bold">Chunks to Symbols</text><text x="525" y="230" text-anchor="middle">tabla (-1, +1)  ★</text>
+    <rect x="650" y="180" width="190" height="70" rx="8" fill="#fff" stroke="#334155" stroke-width="2"/><text x="745" y="208" text-anchor="middle" font-weight="bold">Interp. FIR Filter</text><text x="745" y="230" text-anchor="middle">Sps = 8, h = [1]*8</text>
+    <line x1="200" y1="215" x2="236" y2="215" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+    <line x1="400" y1="215" x2="436" y2="215" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+    <line x1="610" y1="215" x2="646" y2="215" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+    <rect x="650" y="300" width="190" height="60" rx="8" fill="#fff" stroke="#334155" stroke-width="2"/><text x="745" y="326" text-anchor="middle" font-weight="bold">Throttle</text><text x="745" y="347" text-anchor="middle">256 kS/s</text>
+    <line x1="745" y1="250" x2="745" y2="296" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+
+    <!-- channel -->
+    <circle cx="960" cy="330" r="34" fill="#fff" stroke="#334155" stroke-width="3"/><text x="960" y="340" text-anchor="middle" font-size="30" font-weight="bold">+</text>
+    <text x="960" y="386" text-anchor="middle" font-size="13">Add #1</text>
+    <line x1="840" y1="330" x2="922" y2="330" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+    <rect x="900" y="190" width="120" height="56" rx="8" fill="#fff" stroke="#334155" stroke-width="2"/><text x="960" y="214" text-anchor="middle" font-weight="bold">Noise Source</text><text x="960" y="234" text-anchor="middle">AWGN 0.10</text>
+    <line x1="960" y1="246" x2="960" y2="292" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+
+    <circle cx="1180" cy="330" r="34" fill="#fef3c7" stroke="#b45309" stroke-width="3"/><text x="1180" y="340" text-anchor="middle" font-size="30" font-weight="bold">+</text>
+    <text x="1180" y="292" text-anchor="middle" font-size="13" fill="#92400e">Add #2 ★</text>
+    <line x1="994" y1="330" x2="1142" y2="330" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+    <rect x="1100" y="420" width="170" height="80" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="3"/><text x="1185" y="446" text-anchor="middle" font-weight="bold">Vector Source ★</text><text x="1185" y="466" text-anchor="middle">[0j]*255 + [A_imp]</text><text x="1185" y="486" text-anchor="middle">Repeat = True</text>
+    <line x1="1180" y1="420" x2="1180" y2="368" stroke="#b45309" stroke-width="3" marker-end="url(#ao)"/>
+    <!-- impulse train sketch -->
+    <g stroke="#b45309" stroke-width="2">
+      <line x1="900" y1="520" x2="1080" y2="520"/>
+      <line x1="920" y1="520" x2="920" y2="470"/><line x1="980" y1="520" x2="980" y2="470"/><line x1="1040" y1="520" x2="1040" y2="470"/>
+    </g>
+    <text x="900" y="545" font-size="13" fill="#92400e">1 impulso cada 256 muestras = 1 ms</text>
+    <text x="900" y="462" font-size="13" fill="#92400e">A_imp</text>
+
+    <!-- sinks -->
+    <line x1="1214" y1="330" x2="1316" y2="330" stroke="#334155" stroke-width="3"/>
+    <line x1="1290" y1="330" x2="1290" y2="230" stroke="#334155" stroke-width="3"/><line x1="1290" y1="230" x2="1336" y2="230" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+    <line x1="1290" y1="330" x2="1336" y2="330" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+    <line x1="1290" y1="330" x2="1290" y2="430" stroke="#334155" stroke-width="3"/><line x1="1290" y1="430" x2="1336" y2="430" stroke="#334155" stroke-width="3" marker-end="url(#a)"/>
+    <rect x="1340" y="200" width="210" height="60" rx="8" fill="#fff" stroke="#2563eb" stroke-width="2"/><text x="1445" y="226" text-anchor="middle" font-weight="bold">QT Time Sink</text><text x="1445" y="246" text-anchor="middle">señal temporal I/Q</text>
+    <rect x="1340" y="300" width="210" height="60" rx="8" fill="#fff" stroke="#2563eb" stroke-width="2"/><text x="1445" y="326" text-anchor="middle" font-weight="bold">QT Freq Sink</text><text x="1445" y="346" text-anchor="middle">PSD (FFT 1024)</text>
+    <rect x="1340" y="400" width="210" height="60" rx="8" fill="#fff" stroke="#2563eb" stroke-width="2"/><text x="1445" y="426" text-anchor="middle" font-weight="bold">QT Const. Sink</text><text x="1445" y="446" text-anchor="middle">constelación</text>
+    <text x="1445" y="500" text-anchor="middle" font-size="14" fill="#1e3a8a">Los 3 sinks se conectan</text>
+    <text x="1445" y="520" text-anchor="middle" font-size="14" fill="#1e3a8a">a la salida del Add #2 ★</text>
+  </g>
+
+  <!-- parameters table -->
+  <g transform="translate(30,440)">
+    <rect width="830" height="280" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="20" y="34" font-size="20" font-weight="bold" fill="#0f172a">Parámetros de referencia</text>
+    <g font-size="17" fill="#0f172a">
+      <text x="20" y="72">Modulación: BPSK (M = 2)</text><text x="430" y="72">k = log₂M = 1 bit/símbolo</text>
+      <text x="20" y="106">Rs = 32 ksym/s</text><text x="430" y="106">Rb = Rs · k = 32 kb/s</text>
+      <text x="20" y="140">SPS = 8 muestras/símbolo</text><text x="430" y="140">fs = Rs · SPS = 256 kS/s</text>
+      <text x="20" y="174">Pulso rectangular (GRC base)</text><text x="430" y="174">BW ≈ 2Rs = 64 kHz (1.ºs nulos)</text>
+      <text x="20" y="208">Ruido de fondo: AWGN, noise_amp = 0.10</text>
+      <text x="20" y="242">Variable: A_imp = 0 (A) · 0.3 (B) · 0.6 (C) · 1.0 (D)</text>
+    </g>
+  </g>
+
+  <!-- ideal constellation -->
+  <g transform="translate(900,590)">
+    <rect width="300" height="270" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="150" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#0f172a">Constelación ideal BPSK</text>
+    <line x1="30" y1="150" x2="270" y2="150" stroke="#94a3b8" stroke-width="2"/><line x1="150" y1="50" x2="150" y2="200" stroke="#94a3b8" stroke-width="2"/>
+    <circle cx="80" cy="150" r="10" fill="#1d4ed8"/><circle cx="220" cy="150" r="10" fill="#1d4ed8"/>
+    <text x="80" y="185" text-anchor="middle" font-size="15">−1 (bit 0)</text><text x="220" y="185" text-anchor="middle" font-size="15">+1 (bit 1)</text>
+    <text x="262" y="140" font-size="14" fill="#475569">I</text><text x="158" y="62" font-size="14" fill="#475569">Q</text>
+    <text x="150" y="235" text-anchor="middle" font-size="13" fill="#475569">umbral de decisión: I = 0</text>
+  </g>
+  <!-- effect sketch -->
+  <g transform="translate(1220,590)">
+    <rect width="350" height="270" rx="12" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="175" y="30" text-anchor="middle" font-size="17" font-weight="bold" fill="#0f172a">Efecto esperado del impulso</text>
+    <line x1="20" y1="150" x2="330" y2="150" stroke="#94a3b8" stroke-width="2"/><line x1="175" y1="110" x2="175" y2="180" stroke="#94a3b8" stroke-width="2"/>
+    <ellipse cx="100" cy="150" rx="22" ry="10" fill="#93c5fd"/><ellipse cx="250" cy="150" rx="22" ry="10" fill="#93c5fd"/>
+    <circle cx="175" cy="150" r="6" fill="#b45309"/><circle cx="325" cy="150" r="6" fill="#b45309"/>
+    <path d="M100,130 Q137,100 172,140" fill="none" stroke="#b45309" stroke-width="2" marker-end="url(#ao)"/>
+    <path d="M250,130 Q287,100 322,140" fill="none" stroke="#b45309" stroke-width="2" marker-end="url(#ao)"/>
+    <text x="175" y="80" text-anchor="middle" font-size="14" fill="#92400e">+A_imp sobre el eje I</text>
+    <text x="175" y="200" text-anchor="middle" font-size="13" fill="#475569">nube = AWGN (todas las muestras)</text>
+    <text x="175" y="220" text-anchor="middle" font-size="13" fill="#92400e">puntos sueltos = impulsos (1 de 256)</text>
+    <text x="175" y="240" text-anchor="middle" font-size="13" fill="#92400e">con A_imp = 1, −1 cae en el umbral (0)</text>
+  </g>
+  <text x="40" y="760" font-size="16" fill="#92400e" font-weight="bold">★ = bloque agregado o modificado respecto al GRC original del curso</text>
+  <text x="40" y="788" font-size="15" fill="#475569">Cambios: tabla OOK → BPSK; nuevas variables A_imp (slider) y periodo_imp = 256;</text>
+  <text x="40" y="810" font-size="15" fill="#475569">Vector Source de impulsos; Add #2; sinks reconectados a la salida del Add #2;</text>
+  <text x="40" y="832" font-size="15" fill="#475569">PSD con average = 0.2; eje Y de la señal temporal en ±2.5.</text>
+</svg>
