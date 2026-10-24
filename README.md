@@ -1,9 +1,5 @@
 # Telemetría industrial bajo perturbaciones impulsivas — Comunicaciones II, Grupo 1
 
-> **Blog del proyecto:** https://juliancamiloacevedosalamanca-ship-it.github.io/ComunicacionesII_Grupo01/
->
-> **Informe IEEE:** [docs/informe_final.pdf](docs/informe_final.pdf) · **Video de socialización:** _(pegar aquí el enlace cuando esté listo)_
-
 **Escenario:** S1 · Telemetría industrial bajo perturbaciones impulsivas
 **Curso:** Comunicaciones II (27145) — UIS, 2026-2
 **Integrantes:** Julian Camilo Acevedo Salamanca, Luigy Andrey Amado Durán, Juan Camilo Salazar Ariza
@@ -17,15 +13,9 @@ En una planta industrial, un nodo envía variables lentas (temperatura, vibraci�
 
 ---
 
-## Imagen principal del escenario
+## Ficha de escenario
 
-![Escenario de la planta](figures/escenario/escenario_planta.png)
-
-Diagrama técnico del sistema: [figures/diagramas_tecnicos/diagrama_tecnico_sistema.png](figures/diagramas_tecnicos/diagrama_tecnico_sistema.png)
-
----
-
-## Diseño técnico
+Ficha de decisión entregada el 15 de octubre: [docs/ficha_decision_tecnica.pdf](docs/ficha_decision_tecnica.pdf)
 
 | Parámetro | Valor | Cómo se obtiene |
 |---|---|---|
@@ -94,7 +84,7 @@ Random Source → Pack K Bits → Packed to Unpacked → Chunks to Symbols (BPSK
 | C | Media (principal) | 0.10 | 256 muestras | 0.6 | condición principal de análisis |
 | D | Fuerte | 0.10 | 256 muestras | 1.0 | condición de estrés |
 
-La tabla completa, con la columna de observaciones para llenar, está en `data/tablas_de_pruebas/tabla_pruebas.csv`.
+La tabla completa, con las observaciones de cada prueba, está en `data/tablas_de_pruebas/tabla_pruebas.csv`.
 
 ### Evidencias por prueba
 
@@ -102,8 +92,7 @@ Capturas tomadas en GNU Radio Companion 3.10.12 el 24 de octubre de 2026:
 - `tiempo/tiempo_A.png` … `tiempo_D.png`: señal temporal (envolvente compleja, I y Q), ventana de 2048 muestras = 8 ms.
 - `psd/psd_A.png` … `psd_D.png`: PSD (FFT de 1024 puntos, fs = 256 kS/s).
 - `constelacion_o_fsk/constelacion_A.png` … `constelacion_D.png`: constelación (2048 muestras).
-- `capturas_completas/ventana_prueba_A.png` … `D.png`: ventana completa con los valores de los sliders.
-- `diagramas_tecnicos/GRC_modificado_Enlace_Beta_Impulsivo.png`: diagrama del GRC modificado.
+- `grc/GRC_modificado_Enlace_Beta_Impulsivo.png`: captura del GRC modificado.
 
 ---
 
@@ -132,8 +121,6 @@ Capturas tomadas en GNU Radio Companion 3.10.12 el 24 de octubre de 2026:
 
 En el enlace BPSK de telemetría (Rs = 32 ksym/s, fs = 256 kS/s), el ruido impulsivo periódico se manifiesta como picos aislados en el tiempo y como símbolos sueltos desplazados +A_imp en la constelación. La PSD casi no cambia, porque la potencia media del tren de impulsos es pequeña. Con A_imp = 1.0, los símbolos afectados quedan sobre el umbral de decisión. Para este tipo de perturbación, la señal temporal y la constelación son mejores evidencias que la PSD.
 
-
-
 ---
 
 ## Estructura del repositorio
@@ -142,37 +129,16 @@ En el enlace BPSK de telemetría (Rs = 32 ksym/s, fs = 256 kS/s), el ruido impul
 ComunicacionesII_Grupo01/
 ├── README.md
 ├── grc/
-│   ├── archivos_originales_o_referencia/
-│   └── archivos_modificados/
+│   ├── archivos_originales_o_referencia/   (GRC original del curso)
+│   ├── archivos_modificados/               (GRC del proyecto)
+│   └── GRC_modificado_Enlace_Beta_Impulsivo.png
 ├── figures/
-│   ├── escenario/
-│   ├── psd/
-│   ├── constelacion_o_fsk/
 │   ├── tiempo/
-│   ├── capturas_completas/
-│   └── diagramas_tecnicos/
+│   ├── psd/
+│   └── constelacion_o_fsk/
 ├── data/
 │   └── tablas_de_pruebas/
-├── docs/
-│   ├── index.html          (blog, publicado con GitHub Pages)
-│   ├── assets/             (imágenes del blog)
-│   ├── informe_final.pdf
-│   ├── informe_final.docx
-│   ├── guion_video.md
-│   ├── ficha_decision_tecnica.pdf
-│   └── bitacora.md
-└── referencias/
-    └── fuentes_y_enlaces.md
+└── docs/
+    ├── ficha_decision_tecnica.pdf
+    └── bitacora.md
 ```
-
----
-
-## Referencias
-
-[1] K. L. Blackard, T. S. Rappaport y C. W. Bostian, "Measurements and models of radio frequency impulsive noise for indoor wireless communications," *IEEE J. Sel. Areas Commun.*, vol. 11, no. 7, pp. 991–1001, 1993.
-[2] D. Middleton, "Statistical-physical models of electromagnetic interference," *IEEE Trans. Electromagn. Compat.*, vol. EMC-19, no. 3, pp. 106–127, 1977.
-[3] M. Zhan, Z. Pang, D. Dzung, K. Yu y M. Xiao, "Short-packet interleaver against impulse interference in practical industrial environments," arXiv:2203.00770, 2022.
-[4] K. L. Blackard, "Measurements and models of radio frequency impulsive noise inside buildings," tesis de maestría, Virginia Tech, 1991.
-[5] J. G. Proakis y M. Salehi, *Digital Communications*, 5.ª ed. McGraw-Hill, 2008.
-
-Lista completa con enlaces: [referencias/fuentes_y_enlaces.md](referencias/fuentes_y_enlaces.md)
