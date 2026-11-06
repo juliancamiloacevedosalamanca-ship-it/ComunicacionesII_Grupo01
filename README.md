@@ -4,7 +4,7 @@
 **Curso:** Comunicaciones II (27145) — UIS, 2026-2
 **Integrantes:** Julian Camilo Acevedo Salamanca, Luigy Andrey Amado Durán, Juan Camilo Salazar Ariza
 **Última actualización:** 6 de noviembre de 2026
-**Informe final (plantilla IEEE del curso):** [informe/Informe_Final_Grupo1_S1.pdf](informe/Informe_Final_Grupo1_S1.pdf)
+**Informe final (plantilla IEEE del curso):** [docs/informe_final.pdf](docs/informe_final.pdf) (código LaTeX en `informe/latex/`)
 
 ---
 
@@ -217,6 +217,9 @@ ComunicacionesII_Grupo01/
 ├── scripts/
 └── docs/
     ├── ficha_decision_tecnica.pdf
+    ├── informe_final.pdf
     ├── bitacora.md
     └── Guia_laboratorio_hardware_Grupo1.md
+└── referencias/
+    └── fuentes_y_enlaces.md
 ```

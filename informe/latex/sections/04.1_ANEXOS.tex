@@ -67,6 +67,25 @@ class blk(gr.sync_block):
 \end{table}
 
 
+\subsection{Arquitectura inicial: flujograma de la fase de canal}
+\label{app:fase1}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/grc_fase1.png}
+    \caption{Flujograma de la fase de canal, construido a partir del archivo base del curso: BPSK con pulso rectangular, AWGN de amplitud 0.10 y tren de impulsos de amplitud $A_{imp}$ cada 256 muestras.}
+    \label{fig:grc_fase1}
+\end{figure}
+
+\subsection{Flujograma de medición BER (Fase 4)}
+\label{app:fase4}
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{Figuras/flujograma_fase4.png}
+    \caption{Flujograma de medición BER: transmisor con codificación diferencial, canal (AWGN e impulsos), \texttt{e\_EbN0\_Sweep} justo antes del filtro acoplado, receptor (filtro acoplado, muestreo, decisión y decodificación diferencial), \texttt{e\_BER\_Curve} con los bits de la fuente PRBS y los bits recuperados, \texttt{e\_Busca\_Retardo} y el bloque que guarda el CSV.}
+    \label{fig:fase4}
+\end{figure*}
+La Fig.~\ref{fig:fase4} muestra dónde se integró el instrumento. El barrido de ruido se aplica a la señal compleja a 256~kS/s que entra al receptor, y la comparación de bits se hace después de la decodificación diferencial, con la referencia tomada antes del codificador.
+
 \subsection{Evidencia del transmisor en el laboratorio}
 \label{app:lab}
 \begin{figure}[H]

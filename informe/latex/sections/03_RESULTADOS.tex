@@ -11,13 +11,13 @@ La Fig.~\ref{fig:flujograma} muestra el flujograma del enlace completo de la Fas
 \end{figure*}
 
 \subsection{Espectro y señal en el canal}
-En la Fig.~\ref{fig:psd}, la señal a la salida del RRC del transmisor ocupa $\pm21.6$~kHz, como predice la ecuación~\eqref{eq:bw}, y fuera de esa banda sus lóbulos laterales caen más de 30~dB. Al agregar el canal, el AWGN fija un piso plano unos 30~dB por debajo de la banda de la señal. Con $A_{imp}=1$ el espectro casi no cambia: la potencia media del tren de impulsos es $1/256\approx0.004$, menos de la mitad de la del AWGN, y el piso sube apenas 1.5~dB. Con $A_{imp}=5$ la potencia del tren es $25/256\approx0.098$, el piso sube unos 10~dB y aparece un peine de líneas separadas 1~kHz, que es la frecuencia de repetición de los impulsos (un impulso cada 256 muestras a 256~kS/s). La PSD, por ser un promedio, informa poco sobre el riesgo real: un evento de amplitud 5 en una sola muestra apenas se nota en ella.
+En la Fig.~\ref{fig:psd}, la señal a la salida del RRC del transmisor ocupa $\pm21.6$~kHz, como predice la ecuación~\eqref{eq:bw}, y fuera de esa banda sus lóbulos laterales caen más de 30~dB. Al agregar el canal, el AWGN fija un piso plano unos 30~dB por debajo de la banda de la señal. Con $A_{imp}=1$ el espectro casi no cambia respecto a la referencia: la potencia media del tren de impulsos es $1/256\approx0.004$, menos de la mitad de la del AWGN, y el piso sube apenas 1.5~dB (las capturas de las pruebas B a D se incluyen en el repositorio). Con $A_{imp}=5$ la potencia del tren es $25/256\approx0.098$, el piso sube unos 10~dB y aparece un peine de líneas separadas 1~kHz, que es la frecuencia de repetición de los impulsos (un impulso cada 256 muestras a 256~kS/s). La PSD, por ser un promedio, informa poco sobre el riesgo real: un evento de amplitud 5 en una sola muestra apenas se nota en ella.
 
 \begin{figure*}[t]
     \centering
-    \includegraphics[width=0.49\textwidth]{Figuras/psd_A1.png}\hfill
+    \includegraphics[width=0.49\textwidth]{Figuras/psd_A0.png}\hfill
     \includegraphics[width=0.49\textwidth]{Figuras/psd_A5.png}
-    \caption{PSD a la salida del RRC del transmisor (azul) y a la salida del canal (rojo), con AWGN 0.10 y $A_{imp}=1$ (izquierda) y $A_{imp}=5$ (derecha).}
+    \caption{PSD a la salida del RRC del transmisor (azul) y a la salida del canal (rojo), con AWGN 0.10: prueba de referencia $A_{imp}=0$ (izquierda) y prueba de robustez $A_{imp}=5$ (derecha).}
     \label{fig:psd}
 \end{figure*}
 
@@ -80,7 +80,28 @@ La Tabla~\ref{tab:fase2} resume la validación. En todas las pruebas los bits re
 El instante de muestreo resultó tan determinante como el canal. Con el desfase correcto (0 muestras) el margen es 0.88; con 2 muestras de error baja a 0.18, y con 4 muestras ---el cruce del ojo--- la BER sube a 0.25 sin que el canal haya cambiado. Este resultado justifica calcular el retardo total del enlace (88 muestras, 11 símbolos) antes de fijar el muestreo y, en hardware, recuperar el reloj de forma adaptativa.
 
 \subsection{Curvas BER}
-Las curvas de la Fig.~\ref{fig:ber} se midieron en los flujogramas de la Fase~4 con el instrumento del curso: \texttt{e\_EbN0\_Sweep} antes del filtro acoplado, \texttt{e\_BER\_Curve} con \texttt{delay\_bits} $=11$ y barrido de 0 a 14~dB, con $10^5$ bits por punto y 1000 de guarda. Cada flujograma corrió 4 minutos, unas 15 vueltas del barrido, lo que da entre $1.4$ y $1.6\times10^6$ bits por punto. Antes de medir, el bloque \texttt{e\_Busca\_Retardo} confirmó el retardo de 11 bits con correlación $+1.000$ y BER nula en los puntos de alta $E_b/N_0$.
+Las curvas de la Fig.~\ref{fig:ber} se midieron en los flujogramas de la Fase~4 con el instrumento del curso, con los parámetros de la Tabla~\ref{tab:instr}: \texttt{e\_EbN0\_Sweep} se ubicó a la salida del canal, justo antes del filtro acoplado, y \texttt{e\_BER\_Curve} recibe los bits de la fuente PRBS (entrada 0) y los bits a la salida del decodificador diferencial (entrada 1) (Anexo~\ref{app:fase4}).
+
+\begin{table}[H]
+    \centering
+    \caption{Parámetros del instrumento BER}
+    \label{tab:instr}
+    \footnotesize
+    \begin{tabular}{@{}ll@{}}
+        \toprule
+        \textbf{Parámetro} & \textbf{Valor} \\
+        \midrule
+        $R_b$ & 32\,000 b/s \\
+        \texttt{bb\_rate} (entrada del receptor) & 256\,000 muestras/s \\
+        \texttt{EbN0\_min} / \texttt{EbN0\_max} / \texttt{EbN0\_step} & 0 / 14 / 1 dB \\
+        \texttt{bits\_por\_punto} / \texttt{bits\_guardia} & 100\,000 / 1000 \\
+        \texttt{delay\_bits} & 11 \\
+        \texttt{update\_every} & 1000 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Para alinear Tx y Rx se partió del retardo calculado en la Fase~2 (88 muestras = 11 símbolos) y se verificó con el bloque \texttt{e\_Busca\_Retardo}, que correlaciona ambas secuencias en una condición limpia. Cada flujograma corrió 4 minutos, unas 15 vueltas del barrido, lo que da entre $1.4$ y $1.6\times10^6$ bits por punto. Antes de medir, el bloque \texttt{e\_Busca\_Retardo} confirmó el retardo de 11 bits con correlación $+1.000$ y BER nula en los puntos de alta $E_b/N_0$.
 
 Sin impulsos, la curva coincide con la de BPSK con codificación diferencial: $E_b/N_0=7.30$~dB para BER $=10^{-3}$, frente a 7.33~dB teóricos y 6.79~dB de BPSK coherente sin codificación diferencial. Esa diferencia de unos 0.5~dB es el costo de resolver la ambigüedad de fase, porque un error de símbolo produce dos errores de bit consecutivos. Con $A_{imp}=1$ la curva prácticamente no se distingue de la referencia (7.38~dB), lo que confirma lo observado en el ojo. Los pocos errores registrados a 14~dB en esas dos curvas (unos 10 en $1.4\times10^6$ bits) no son del enlace: aparecen en el salto de 14 a 0~dB al reiniciar el barrido, cuando algunos bits del final del punto de 14~dB ya reciben el ruido del punto de 0~dB. A 12 y 13~dB no hubo errores.
 
