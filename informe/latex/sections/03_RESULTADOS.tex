@@ -1,7 +1,7 @@
 \section{Resultados y discusión}
 \label{sec:resultados}
 
-La Fig.~\ref{fig:flujograma} muestra el flujograma del enlace completo de la Fase~2. Las señales y las curvas de esta sección se obtuvieron con una simulación numérica que reproduce ese flujograma bloque a bloque: los mismos 89 coeficientes RRC en Tx y Rx, el mismo retardo de 11 bits, la misma regla de decisión y, para las curvas BER, la misma ley de inyección de ruido de la ecuación~\eqref{eq:pn}. En cada condición se transmitieron $2\times10^5$ bits.
+La Fig.~\ref{fig:flujograma} muestra el flujograma del enlace completo de la Fase~2. Las figuras de las secciones de espectro y receptor son capturas de ese flujograma en ejecución, con AWGN de amplitud 0.10 y la BER medida sobre una ventana de $10^5$ bits. Para los márgenes de decisión y como verificación de las curvas BER se usó además una simulación numérica que reproduce el flujograma bloque a bloque: los mismos 89 coeficientes RRC en Tx y Rx, el mismo retardo de 11 bits, la misma regla de decisión y la misma ley de inyección de ruido de la ecuación~\eqref{eq:pn}. Ambas coinciden: el flujograma midió BER $=0$ en las pruebas A a E y 0.2503 con 4 muestras de desfase, y la simulación dio 0 y 0.25.
 
 \begin{figure*}[t]
     \centering
@@ -11,21 +11,22 @@ La Fig.~\ref{fig:flujograma} muestra el flujograma del enlace completo de la Fas
 \end{figure*}
 
 \subsection{Espectro y señal en el canal}
-En la Fig.~\ref{fig:psd}, la señal a la salida del RRC del transmisor ocupa $\pm21.6$~kHz, como predice la ecuación~\eqref{eq:bw}, y sus lóbulos laterales caen por debajo de $-30$~dB fuera de esa banda. Al agregar el canal, el AWGN fija un piso plano cerca de $-19$~dB. Con $A_{imp}=1$ el espectro casi no cambia: la potencia media del tren de impulsos es $1/256\approx0.004$, menos de la mitad de la del AWGN, y el piso sube apenas 1.5~dB. Con $A_{imp}=5$ la potencia del tren es $25/256\approx0.098$, el piso sube unos 10~dB y aparece un peine de líneas separadas 1~kHz, que es la frecuencia de repetición de los impulsos (un impulso cada 256 muestras a 256~kS/s). La PSD, por ser un promedio, informa poco sobre el riesgo real: un evento de amplitud 5 en una sola muestra apenas se nota en ella.
+En la Fig.~\ref{fig:psd}, la señal a la salida del RRC del transmisor ocupa $\pm21.6$~kHz, como predice la ecuación~\eqref{eq:bw}, y fuera de esa banda sus lóbulos laterales caen más de 30~dB. Al agregar el canal, el AWGN fija un piso plano unos 30~dB por debajo de la banda de la señal. Con $A_{imp}=1$ el espectro casi no cambia: la potencia media del tren de impulsos es $1/256\approx0.004$, menos de la mitad de la del AWGN, y el piso sube apenas 1.5~dB. Con $A_{imp}=5$ la potencia del tren es $25/256\approx0.098$, el piso sube unos 10~dB y aparece un peine de líneas separadas 1~kHz, que es la frecuencia de repetición de los impulsos (un impulso cada 256 muestras a 256~kS/s). La PSD, por ser un promedio, informa poco sobre el riesgo real: un evento de amplitud 5 en una sola muestra apenas se nota en ella.
 
-\begin{figure}[H]
+\begin{figure*}[t]
     \centering
-    \includegraphics[width=\linewidth]{Figuras/psd.png}
-    \caption{PSD a la salida del RRC del transmisor y a la salida del canal (AWGN 0.10 con $A_{imp}=1$ y $A_{imp}=5$).}
+    \includegraphics[width=0.49\textwidth]{Figuras/psd_A1.png}\hfill
+    \includegraphics[width=0.49\textwidth]{Figuras/psd_A5.png}
+    \caption{PSD a la salida del RRC del transmisor (azul) y a la salida del canal (rojo), con AWGN 0.10 y $A_{imp}=1$ (izquierda) y $A_{imp}=5$ (derecha).}
     \label{fig:psd}
-\end{figure}
+\end{figure*}
 
 En el dominio del tiempo (Fig.~\ref{fig:tiempo}), en cambio, el impulso sí es visible: aparece solo en la componente I, porque es real, cada 1~ms. Su efecto depende del símbolo que coincide con él: sobre un nivel positivo produce un pico que supera 2, y sobre uno negativo reduce el nivel hacia cero.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Figuras/tiempo_canal.png}
-    \caption{Envolvente compleja a la salida del canal con $A_{imp}=1$ (8~ms). Los triángulos marcan los instantes de los impulsos.}
+    \caption{Envolvente compleja a la salida del canal con $A_{imp}=1$ (8~ms; I en azul, Q en rojo). Los picos aislados de la componente I, uno por milisegundo, son los impulsos.}
     \label{fig:tiempo}
 \end{figure}
 
@@ -39,7 +40,7 @@ La Fig.~\ref{fig:ojos} muestra el ojo a la salida del filtro acoplado. Con $A_{i
     \label{fig:ojos}
 \end{figure}
 
-La explicación está en el filtro acoplado. Un impulso de una muestra no se suma de forma directa a la variable de decisión: sale del filtro convertido en la forma del pulso, escalado por $1/\sum h^2$. Como el período de 256 muestras es múltiplo de SPS~$=8$, el impulso cae siempre en la misma fase dentro del símbolo, y en los instantes de muestreo su contribución máxima es $0.100\,A_{imp}$ (algo menor que la cota de 0.137 de la ecuación~\eqref{eq:atenuacion}, que corresponde al pico del pulso). Con $A_{imp}=1$ la muestra más afectada se corre $0.10$, frente a una distancia de 1 al umbral. Por eso la constelación recuperada (Fig.~\ref{fig:const}) mantiene dos nubes compactas en $\pm1$ hasta $A_{imp}=1$. Con $A_{imp}=5$ aparecen grupos de puntos desplazados hacia $\pm0.5$ y $\pm1.5$, que corresponden a los símbolos vecinos al impulso.
+La explicación está en el filtro acoplado. Un impulso de una muestra no se suma de forma directa a la variable de decisión: sale del filtro convertido en la forma del pulso, escalado por $1/\sum h^2$. Como el período de 256 muestras es múltiplo de SPS~$=8$, el impulso cae siempre en la misma fase dentro del símbolo, y en los instantes de muestreo su contribución máxima es $0.100\,A_{imp}$ (algo menor que la cota de 0.137 de la ecuación~\eqref{eq:atenuacion}, que corresponde al pico del pulso). Con $A_{imp}=1$ la muestra más afectada se corre $0.10$, frente a una distancia de 1 al umbral. Por eso la constelación recuperada (Fig.~\ref{fig:const}) mantiene dos nubes compactas en $\pm1$ hasta $A_{imp}=1$. Con $A_{imp}=5$ aparecen dos grupos de puntos aislados, cerca de $-0.5$ y $+1.5$: son los símbolos que coinciden con el impulso, desplazados $+0.5$ hacia la derecha porque el impulso es positivo. Con 4 muestras de desfase, en cambio, los puntos se reparten a lo largo de todo el eje I y la BER sube a 0.25.
 
 \begin{figure}[H]
     \centering
@@ -52,7 +53,7 @@ La Tabla~\ref{tab:fase2} resume la validación. En todas las pruebas los bits re
 
 \begin{table}[H]
     \centering
-    \caption{Validación del receptor con AWGN 0.10 ($2\times10^5$ bits por prueba)}
+    \caption{Validación del receptor con AWGN 0.10: BER medida en el flujograma (ventana de $10^5$ bits) y margen mínimo de la simulación ($2\times10^5$ bits)}
     \label{tab:fase2}
     \footnotesize
     \begin{tabular}{@{}lccc@{}}
@@ -64,6 +65,7 @@ La Tabla~\ref{tab:fase2} resume la validación. En todas las pruebas los bits re
         C (media) & 0.6 & 0 & 0.85 \\
         D (fuerte) & 1.0 & 0 & 0.81 \\
         E (robustez) & 5.0 & 0 & 0.40 \\
+        F (desfase 4) & 0.0 & 0.2503 & -- \\
         \bottomrule
     \end{tabular}
 \end{table}
@@ -71,23 +73,25 @@ La Tabla~\ref{tab:fase2} resume la validación. En todas las pruebas los bits re
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Figuras/bits_tx_rx.png}
-    \caption{Bits transmitidos (retrasados 11 bits) y bits recuperados con $A_{imp}=1$.}
+    \caption{Bits transmitidos (abajo, retrasados 11 bits) y bits recuperados (arriba, desplazados $+1.5$) con $A_{imp}=1$.}
     \label{fig:bits}
 \end{figure}
 
 El instante de muestreo resultó tan determinante como el canal. Con el desfase correcto (0 muestras) el margen es 0.88; con 2 muestras de error baja a 0.18, y con 4 muestras ---el cruce del ojo--- la BER sube a 0.25 sin que el canal haya cambiado. Este resultado justifica calcular el retardo total del enlace (88 muestras, 11 símbolos) antes de fijar el muestreo y, en hardware, recuperar el reloj de forma adaptativa.
 
 \subsection{Curvas BER}
-La Fig.~\ref{fig:ber} compara las curvas simuladas con la teoría. Sin impulsos, la curva coincide con la de BPSK con codificación diferencial: $E_b/N_0=7.28$~dB para BER $=10^{-3}$, frente a 7.33~dB teóricos y 6.79~dB de BPSK coherente sin codificación diferencial. Esa diferencia de unos 0.5~dB es el costo de resolver la ambigüedad de fase, porque un error de símbolo produce dos errores de bit consecutivos. Con $A_{imp}=1$ la curva no se distingue de la referencia (7.32~dB), lo que confirma lo observado en el ojo.
+Las curvas de la Fig.~\ref{fig:ber} se midieron en los flujogramas de la Fase~4 con el instrumento del curso: \texttt{e\_EbN0\_Sweep} antes del filtro acoplado, \texttt{e\_BER\_Curve} con \texttt{delay\_bits} $=11$ y barrido de 0 a 14~dB, con $10^5$ bits por punto y 1000 de guarda. Cada flujograma corrió 4 minutos, unas 15 vueltas del barrido, lo que da entre $1.4$ y $1.6\times10^6$ bits por punto. Antes de medir, el bloque \texttt{e\_Busca\_Retardo} confirmó el retardo de 11 bits con correlación $+1.000$ y BER nula en los puntos de alta $E_b/N_0$.
+
+Sin impulsos, la curva coincide con la de BPSK con codificación diferencial: $E_b/N_0=7.30$~dB para BER $=10^{-3}$, frente a 7.33~dB teóricos y 6.79~dB de BPSK coherente sin codificación diferencial. Esa diferencia de unos 0.5~dB es el costo de resolver la ambigüedad de fase, porque un error de símbolo produce dos errores de bit consecutivos. Con $A_{imp}=1$ la curva prácticamente no se distingue de la referencia (7.38~dB), lo que confirma lo observado en el ojo. Los pocos errores registrados a 14~dB en esas dos curvas (unos 10 en $1.4\times10^6$ bits) no son del enlace: aparecen en el salto de 14 a 0~dB al reiniciar el barrido, cuando algunos bits del final del punto de 14~dB ya reciben el ruido del punto de 0~dB. A 12 y 13~dB no hubo errores.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Figuras/curva_ber.png}
-    \caption{BER frente a $E_b/N_0$: teoría BPSK, teoría con codificación diferencial y curvas simuladas del enlace con $A_{imp}=0$, 1 y 5 ($4\times10^5$ a $4\times10^6$ bits por punto).}
+    \caption{BER frente a $E_b/N_0$ medida en los flujogramas de la Fase~4 ($A_{imp}=0$, 1 y 5) junto con la teoría de BPSK coherente y con codificación diferencial. Los puntos vacíos a 14~dB son errores causados por el reinicio del barrido.}
     \label{fig:ber}
 \end{figure}
 
-Con $A_{imp}=5$ la curva se separa: requiere 9.12~dB para BER $=10^{-3}$ (1.8~dB más que la referencia) y, en lugar de caer en forma de cascada, decrece lentamente: $2.7\times10^{-4}$ a 11~dB y $9\times10^{-6}$ a 14~dB, donde la referencia ya no registra errores. El comportamiento se explica con un modelo simple. De cada 32 símbolos, el más cercano al impulso pierde la mitad de su distancia al umbral ($1-0.100\times5=0.5$), es decir, unos 6~dB de relación señal a ruido, y a alta $E_b/N_0$ son esos símbolos los que producen casi todos los errores. Promediando la probabilidad de error de cada símbolo según su desplazamiento se obtienen $1.1\times10^{-3}$ a 9~dB y $2.7\times10^{-4}$ a 11~dB, valores que coinciden con la simulación. Parte de la penalización, unos 0.4~dB, es aparente: el instrumento mide la potencia recibida incluyendo los impulsos y asigna ruido con base en ella.
+Con $A_{imp}=5$ la curva se separa: requiere 9.17~dB para BER $=10^{-3}$ (1.8~dB más que la referencia) y, en lugar de caer en forma de cascada, decrece lentamente: $2.7\times10^{-4}$ a 11~dB y $1.7\times10^{-5}$ a 14~dB. El comportamiento se explica con un modelo simple. De cada 32 símbolos, el más cercano al impulso pierde la mitad de su distancia al umbral ($1-0.100\times5=0.5$), es decir, unos 6~dB de relación señal a ruido, y a alta $E_b/N_0$ son esos símbolos los que producen casi todos los errores. Promediando la probabilidad de error de cada símbolo según su desplazamiento se obtienen $1.1\times10^{-3}$ a 9~dB y $2.7\times10^{-4}$ a 11~dB; el flujograma midió $1.12\times10^{-3}$ y $2.71\times10^{-4}$, y la simulación numérica del mismo enlace dio valores iguales. Parte de la penalización, unos 0.4~dB, es aparente: el instrumento mide la potencia recibida incluyendo los impulsos y asigna ruido con base en ella.
 
 \begin{table}[H]
     \centering
@@ -100,9 +104,9 @@ Con $A_{imp}=5$ la curva se separa: requiere 9.12~dB para BER $=10^{-3}$ (1.8~dB
         \midrule
         Teoría BPSK coherente & 6.79 & -- \\
         Teoría con cod. diferencial & 7.33 & referencia \\
-        Simulado, sin impulsos & 7.28 & $-0.05$ \\
-        Simulado, $A_{imp}=1$ & 7.32 & $-0.01$ \\
-        Simulado, $A_{imp}=5$ & 9.12 & $+1.79$ \\
+        Medido, sin impulsos & 7.30 & $-0.03$ \\
+        Medido, $A_{imp}=1$ & 7.38 & $+0.05$ \\
+        Medido, $A_{imp}=5$ & 9.17 & $+1.84$ \\
         \bottomrule
     \end{tabular}
 \end{table}

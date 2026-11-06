@@ -151,7 +151,7 @@ PRBS-15 → BPSK (−1, +1) → RRC Tx (β = 0.35, span 11, 89 coef., ganancia S
 
 Muestrear con 4 muestras de desfase (en el cruce del ojo) sube la BER a 0.25 sin cambiar el canal.
 
-Figuras: `figures/fase2_fase4/` (PSD, señal en el tiempo, ojos, constelaciones, bits Tx vs Rx y flujograma).
+Capturas de GNU Radio de todas las pruebas: `capturas_gnuradio/fase2/` (BER medida en `ber_fase2.csv`). Figuras del informe: `figures/fase2_fase4/`.
 
 ## Fase 3 — Hardware SDR (HackRF One / USRP)
 
@@ -171,21 +171,22 @@ Rs, SPS, β, el mapeo y la decisión no cambian. Se quitó el Throttle porque el
 
 - Simulación de referencia: `grc/fase4_ber/simulacion/`, con `e_EbN0_Sweep`, `e_BER_Curve` y el CSV. Barrido de 0 a 14 dB, 10⁵ bits por punto.
 - Hardware: `grc/fase4_ber/hardware/`. El bloque `e_Busca_Retardo` imprime el `delay_bits` que hay que usar.
-- Curvas: `data/curvas_ber/curva_BER_sim_AWGN.csv`, `..._Impulsos_A1.csv` y `..._Impulsos_A5.csv`.
+- Curvas medidas en GNU Radio: `data/curvas_ber/curva_BER_sim_AWGN.csv`, `..._Impulsos_A1.csv` y `..._Impulsos_A5.csv` (unos 1.5·10⁶ bits por punto). `e_Busca_Retardo` confirmó delay_bits = 11.
+- Nota: en GNU Radio 3.10.12 el bloque `e_BER_Curve` del kit usa `gr.sync_decimator`, que GRC no reconoce dentro de un bloque Python, y `e_BER_CSV` usa `__file__`, que no existe cuando GRC revisa el bloque. En nuestros archivos se cambió a `gr.decim_block` y se agregó un respaldo para `__file__`; el comportamiento no cambia.
 
 | Condición | Eb/N0 para BER = 1e-3 | Penalización |
 |---|---|---|
 | Teoría BPSK coherente | 6.79 dB | — |
 | Teoría BPSK con codificación diferencial | 7.33 dB | referencia |
-| Simulado, sin impulsos | 7.28 dB | −0.05 dB |
-| Simulado, A_imp = 1 | 7.32 dB | −0.01 dB |
-| Simulado, A_imp = 5 | 9.12 dB | +1.79 dB |
+| GNU Radio, sin impulsos | 7.30 dB | −0.03 dB |
+| GNU Radio, A_imp = 1 | 7.38 dB | +0.05 dB |
+| GNU Radio, A_imp = 5 | 9.17 dB | +1.84 dB |
 
 Con A_imp = 5, uno de cada 32 símbolos pierde la mitad de su distancia al umbral y la curva cae lentamente (9·10⁻⁶ a 14 dB).
 
 ![Curva BER](figures/fase2_fase4/curva_ber.png)
 
-`scripts/` contiene la simulación numérica del mismo enlace con la que se generaron las figuras y las curvas del informe.
+`scripts/` contiene una simulación numérica del mismo enlace, usada para verificar los resultados de GNU Radio y para calcular los márgenes de decisión.
 
 ## Práctica de laboratorio con antenas (5 de noviembre)
 
@@ -210,6 +211,7 @@ ComunicacionesII_Grupo01/
 ├── data/
 │   ├── tablas_de_pruebas/
 │   └── curvas_ber/
+├── capturas_gnuradio/                      (capturas de las Fases 2 y 4)
 ├── informe/                                (PDF y código LaTeX)
 ├── laboratorio_hackrf_5nov/                (evidencia de la práctica con antenas)
 ├── scripts/

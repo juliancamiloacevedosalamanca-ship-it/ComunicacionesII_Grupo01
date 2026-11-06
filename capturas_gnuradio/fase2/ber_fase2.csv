@@ -1,0 +1,7 @@
+prueba,A_imp,offset,noise_amp,BER_ventana_100k
+A_ref_Aimp_0.0,0.0,0,0.1,0
+B_suave_Aimp_0.3,0.3,0,0.1,0
+C_media_Aimp_0.6,0.6,0,0.1,0
+D_fuerte_Aimp_1.0,1.0,0,0.1,0
+E_extrema_Aimp_5.0,5.0,0,0.1,0
+F_Aimp_0.0_offset_4,0.0,4,0.1,0.2503
