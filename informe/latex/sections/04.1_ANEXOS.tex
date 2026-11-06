@@ -39,33 +39,91 @@ class blk(gr.sync_block):
         return len(input_items[0])
 \end{lstlisting}
 
-\subsection{Parámetros de la interfaz SDR}
+\subsection{Interfaz SDR: parámetros, enlace físico y errores}
 \label{app:sdr}
+La Tabla~\ref{tab:sdr} explica cada parámetro de los bloques de radio usados en los flujogramas de la Fase~3 y la Fig.~\ref{fig:enlace} muestra el montaje físico de prueba.
 
-\begin{table}[H]
+\begin{table*}[t]
     \centering
-    \caption{Configuración de HackRF One y USRP}
+    \caption{Parámetros de los bloques de radio y su justificación}
     \label{tab:sdr}
     \footnotesize
-    \setlength{\tabcolsep}{3pt}
-    \begin{tabular}{@{}lcc@{}}
+    \begin{tabular}{@{}p{3.0cm}p{3.2cm}p{2.6cm}p{7.6cm}@{}}
         \toprule
-        \textbf{Parámetro} & \textbf{HackRF One} & \textbf{USRP} \\
+        \textbf{Parámetro} & \textbf{HackRF One (Osmocom)} & \textbf{USRP (UHD)} & \textbf{Justificación} \\
         \midrule
-        Bloque Tx / Rx & Osmocom Sink / Source & UHD Sink / Source \\
-        Selección & \texttt{hackrf=0} & dirección o serial \\
-        Tasa del radio & 2 MS/s & 1 MS/s \\
-        Remuestreo Tx & $\times125/16$ & $\times125/32$ \\
-        $f_c$ Tx / Rx & $f_c-200$ kHz / $f_c+200$ kHz & igual \\
-        Ganancia Tx & IF 20 dB, amp. RF apagado & 20 dB \\
-        Ganancia Rx & LNA 16 dB, VGA 20 dB & 30 dB \\
-        Ancho de banda RF & automático & automático \\
-        Antena & -- & TX/RX y RX2 \\
-        Bias-T / reloj & apagado / interno & -- / interno \\
+        Selección del equipo & \texttt{hackrf=0} & dirección vacía, \texttt{serial=} o \texttt{addr=} & Con un solo radio basta el índice; con varios se usa el número de serie (HackRF, B2xx) o la IP (N2xx) para no confundir Tx y Rx. \\
+        Tasa del radio & 2 MS/s & 1 MS/s & HackRF admite de 2 a 20 MS/s; 1 MS/s es válida en B2xx y N2xx (100 MHz/100). Ninguna coincide con 256 kS/s, por eso se remuestrea. \\
+        Remuestreo Tx / Rx & $\times125/16$ / $\times16/125$ & $\times125/32$ / $\times32/125$ & $256\,000\times125/16=2\times10^6$. $R_s$ no se cambia: la adaptación pertenece a la interfaz, no al diseño. \\
+        Frecuencia central & $960$ MHz $\mp 200$ kHz & igual & Frecuencia asignada en la práctica del laboratorio. El oscilador se desplaza 200 kHz y la señal se corrige digitalmente para apartarla de la componente de continua. \\
+        Corrección de frecuencia & 0 ppm & -- & El offset entre osciladores (unos kHz a 960 MHz) lo corrige el lazo de frecuencia del receptor; la corrección fija solo sirve si se conoce el error del cristal. \\
+        Ganancias Tx & IF 20 dB, amp. RF apagado & 20 dB & Se empieza bajo, sobre todo por cable. La amplitud digital se mantiene con pico menor que 1 para no saturar el conversor. \\
+        Ganancias Rx & LNA 16 dB, VGA 20 dB, amp. RF apagado & 30 dB & Se suben de a poco hasta ver la señal sin saturación (constelación en anillo o espectro con techo indican exceso). \\
+        Ancho de banda RF & 0 (automático) & automático & El filtro analógico se elige según la tasa del radio; la señal ocupa solo 43 kHz. \\
+        Antena / puerto & ANT & TX/RX (Tx), RX2 (Rx) & Puertos físicos del modelo disponible. \\
+        Bias-T & apagado & -- & Alimenta un LNA externo por el coaxial; activarlo sin saber qué hay conectado puede dañar equipos. \\
+        Reloj / tiempo & interno & interno & Con una referencia externa de 10 MHz compartida desaparecería casi todo el offset de frecuencia entre los radios. \\
+        Throttle & eliminado & eliminado & El radio fija el ritmo de muestras; un regulador adicional produce \emph{underflows} u \emph{overflows}. \\
         \bottomrule
     \end{tabular}
-\end{table}
+\end{table*}
 
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figuras/enlace_fisico.png}
+    \caption{Montaje del enlace físico de prueba: por cable con atenuador (opción 1) y por aire con antenas, como en la práctica del 5 de noviembre (opción 2).}
+    \label{fig:enlace}
+\end{figure*}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{Figuras/bloques_radio.png}
+    \caption{Configuración de los bloques de radio en los flujogramas de la Fase~3: Osmocom Sink (transmisor HackRF), Osmocom Source (receptor HackRF) y UHD: USRP Sink (transmisor USRP).}
+    \label{fig:bloques}
+\end{figure*}
+La Fig.~\ref{fig:bloques} muestra los bloques configurados. En el Osmocom Sink la frecuencia es \texttt{fc - lo\_off}, la tasa \texttt{radio\_rate}, la ganancia de RF (amplificador) 0 y la ganancia IF \texttt{tx\_vga}; el campo de ganancia BB no tiene efecto en transmisión con HackRF. En el Osmocom Source la frecuencia es \texttt{fc + lo\_off}, la ganancia IF corresponde al LNA (\texttt{rx\_lna}) y la BB al VGA (\texttt{rx\_vga}), con el control automático de ganancia del radio desactivado para que el nivel sea repetible. En ambos el ancho de banda 0 deja que el driver elija el filtro y la antena vacía usa el único puerto del equipo. En el USRP Sink la dirección vacía toma el primer equipo encontrado, el reloj es interno y la tasa es \texttt{radio\_rate}; la frecuencia, la ganancia y la antena (TX/RX) se fijan en la pestaña de opciones de RF.
+
+
+
+La Tabla~\ref{tab:errores} recoge los errores y advertencias reales que aparecieron durante el proyecto y cómo se resolvieron.
+
+\begin{table*}[t]
+    \centering
+    \caption{Errores y advertencias encontrados y solución}
+    \label{tab:errores}
+    \footnotesize
+    \begin{tabular}{@{}p{5.6cm}p{5.0cm}p{5.8cm}@{}}
+        \toprule
+        \textbf{Mensaje u observación} & \textbf{Causa} & \textbf{Solución} \\
+        \midrule
+        \texttt{Missing Block: digital\_glfsr\_source\_b} & En GNU Radio 3.10.12 el bloque GLFSR es genérico. & Usar \emph{GLFSR Source} con tipo \emph{byte}. \\
+        \texttt{No python block class found in code} (\texttt{e\_BER\_Curve}) & El bloque del kit hereda de \texttt{gr.sync\_decimator}, que el editor no reconoce en un bloque Python. & Heredar de \texttt{gr.decim\_block}, con el mismo comportamiento. \\
+        \texttt{name '\_\_file\_\_' is not defined} (\texttt{e\_BER\_CSV}) & Al revisar el bloque, el editor no define \texttt{\_\_file\_\_}. & Respaldo con la carpeta de trabajo; en ejecución se usa la carpeta del flujograma. \\
+        \texttt{This flow graph may not have flow control} & Flujogramas de la Fase~4 simulados sin Throttle. & Es intencional: el barrido corre tan rápido como permite el procesador. En hardware el radio fija el ritmo. \\
+        \texttt{buffer\_double\_mapped: allocate\_buffer} & Vectores de 15 valores (60 bytes) no alineados a potencias de dos. & Advertencia sin efecto en los resultados. \\
+        Ventana gráfica congelada en el portátil & Ocho gráficas en tiempo real e interacción manual simultánea. & Flujograma automatizado que cambia los parámetros y guarda las capturas sin intervención. \\
+        BER de 0.25 con el enlace limpio & Muestreo en el cruce del ojo (desfase de 4 muestras). & Calcular el retardo total (88 muestras) y muestrear con desfase 0. \\
+        Espiga fija en 960.2 MHz (laboratorio) & Componente de continua del receptor sintonizado en $f_c+200$ kHz. & Desplazamiento del oscilador local, de modo que la espiga no cae sobre la señal. \\
+        Saltos de rotación 0/90/180/270° y tramas con CRC erróneo (laboratorio) & Ambigüedad de fase del lazo de portadora tras pérdidas de sincronía. & Correlación de la trama con las cuatro rotaciones; en el diseño BPSK, codificación diferencial. \\
+        Valores con punto rechazados en los controles & Configuración regional en español de Windows. & Escribir los decimales con coma (0,3). \\
+        \bottomrule
+    \end{tabular}
+\end{table*}
+
+\subsection{Respuestas a las preguntas de investigación de la Fase 3}
+\label{app:preguntas}
+\begin{enumerate}
+    \item \emph{Channel Model.} Con radios reales, el canal es el medio físico entre ellos; en el flujograma solo se conserva la perturbación que el grupo decide inyectar.
+    \item \emph{Throttle.} El radio consume o entrega muestras al ritmo de su reloj; un regulador adicional competiría con ese ritmo.
+    \item \emph{RF y banda base.} $f_c$ es la frecuencia del oscilador del radio; la señal de banda base ocupa $\pm21.6$ kHz alrededor de 0 (desplazada por el offset de 200 kHz) y en el aire aparece alrededor de $f_c$.
+    \item \emph{Transmisor lento.} El radio se queda sin muestras (\emph{underflow}, ``U'' en la consola) y transmite huecos que rompen la sincronización del receptor.
+    \item \emph{Amplitud digital y ganancia RF.} La amplitud digital usa el rango del conversor y por encima de 1 satura; la ganancia RF amplifica la señal ya convertida y también el ruido de las etapas siguientes.
+    \item \emph{Tasa útil.} La limitan todos: el conversor, el bus (USB 2.0 en HackRF, USB 3.0 o Ethernet en USRP) y el procesador que ejecuta los bloques.
+    \item \emph{Offset entre radios.} Cada oscilador tiene una tolerancia de algunos ppm; a 960 MHz, 10 ppm son 9.6 kHz.
+    \item \emph{Qué se conserva.} Modulación, $R_s$, $R_b$, SPS, $\beta$, span, mapeo y decisión pertenecen al diseño de comunicaciones. Frecuencia central, tasa del radio, remuestreo, ganancias, ancho de banda RF, puerto, reloj y offset del oscilador pertenecen a la interfaz de hardware, y la sincronización de portadora y reloj aparece por usar dos radios independientes.
+    \item \emph{Sin atenuación.} La potencia del transmisor puede superar el máximo de entrada del receptor (unos $-5$ dBm en HackRF) y dañar el LNA.
+    \item \emph{Problema de RF o de modulación.} Si el mismo flujograma funciona en simulación y en hardware el espectro aparece desplazado, saturado o con espiga de continua, el problema es de RF; si el espectro es correcto pero la constelación no, el problema está en la sincronización o en la decisión.
+\end{enumerate}
 
 \subsection{Arquitectura inicial: flujograma de la fase de canal}
 \label{app:fase1}
@@ -78,7 +136,16 @@ class blk(gr.sync_block):
 
 \subsection{Capturas de GNU Radio por prueba (Fase 2)}
 \label{app:capturas}
-Las Figs.~\ref{fig:pA}--\ref{fig:pF} reúnen las capturas completas del flujograma de la Fase~2 para cada prueba, siempre con AWGN de amplitud 0.10. En cada figura, a la izquierda está la pestaña \emph{Transmisor y canal} (PSD de la salida del RRC y del canal, envolvente compleja del canal en 8~ms y plano I--Q sobremuestreado) y a la derecha la pestaña \emph{Receptor} (ojo de las componentes I y Q, constelación recuperada y salida del filtro acoplado en 2~ms). La Fig.~\ref{fig:validacion} reúne la pestaña \emph{Validación} de todas las pruebas.
+Las Figs.~\ref{fig:p0}--\ref{fig:pF} reúnen las capturas completas del flujograma de la Fase~2 para cada prueba: primero la condición ideal, sin ruido, y luego las pruebas con AWGN de amplitud 0.10. En cada figura, a la izquierda está la pestaña \emph{Transmisor y canal} (PSD de la salida del RRC y del canal, envolvente compleja del canal en 8~ms y plano I--Q sobremuestreado) y a la derecha la pestaña \emph{Receptor} (ojo de las componentes I y Q, constelación recuperada y salida del filtro acoplado en 2~ms). La Fig.~\ref{fig:validacion} reúne la pestaña \emph{Validación} de todas las pruebas.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=\textwidth]{Figuras/prueba_0.png}
+    \caption{Prueba 0 (condición ideal: sin AWGN y sin impulsos).}
+    \label{fig:p0}
+\end{figure*}
+
+\textbf{Prueba 0.} Es la validación en condición ideal que pide la guía de la Fase~2. Sin ruido, la PSD del canal se superpone exactamente a la del transmisor y deja ver los lóbulos laterales del RRC, que en las demás pruebas quedan bajo el piso del AWGN. La envolvente y el plano I--Q sobremuestreado no tienen componente Q, y la constelación recuperada son dos puntos exactos en $\pm1$: la cascada RRC--RRC no deja interferencia intersimbólica en el instante de muestreo elegido. La BER es cero y los bits recuperados coinciden con los transmitidos.
 
 \begin{figure*}[!t]
     \centering
@@ -114,7 +181,7 @@ Las Figs.~\ref{fig:pA}--\ref{fig:pF} reúnen las capturas completas del flujogra
     \label{fig:pD}
 \end{figure*}
 
-\textbf{Prueba D.} Los impulsos se ven con claridad en el tiempo, con picos que superan 2, y en el plano I--Q aparecen puntos aislados cerca de $I\approx2.3$, fuera de la franja de la señal. En la fase de canal, con pulso rectangular, esta amplitud llevaba los símbolos negativos al umbral. Con el filtro acoplado, la constelación solo muestra unas pocas muestras corridas $\approx0.1$ hacia la derecha y la BER sigue en cero.
+\textbf{Prueba D.} Los impulsos se ven con claridad en el tiempo, con picos que superan 2, y en el plano I--Q aparecen puntos aislados entre $I\approx1.9$ y $2.4$, fuera de la franja de la señal. En la fase de canal, con pulso rectangular, esta amplitud llevaba los símbolos negativos al umbral. Con el filtro acoplado, la constelación solo muestra unas pocas muestras corridas $\approx0.1$ hacia la derecha y la BER sigue en cero.
 
 \begin{figure*}[!t]
     \centering
@@ -132,15 +199,15 @@ Las Figs.~\ref{fig:pA}--\ref{fig:pF} reúnen las capturas completas del flujogra
     \label{fig:pF}
 \end{figure*}
 
-\textbf{Prueba F.} El canal es el mismo de la referencia, como confirma la pestaña izquierda, idéntica a la de la Fig.~\ref{fig:pA}. Lo único que cambia es el instante de muestreo. La salida del filtro acoplado es igual, pero al tomar la muestra en el cruce del ojo la constelación se reparte a lo largo de todo el eje I, con valores cercanos a cero, y la BER sube a 0.2503. Esta prueba muestra que el receptor depende tanto de la sincronización como del canal.
+\textbf{Prueba F.} El canal es el mismo de la referencia, como confirma la pestaña izquierda, idéntica a la de la Fig.~\ref{fig:pA}. Lo único que cambia es el instante de muestreo. La salida del filtro acoplado es igual, pero al tomar la muestra en el cruce del ojo la constelación se reparte a lo largo de todo el eje I, con valores cercanos a cero, y la BER sube a 0.2498. Esta prueba muestra que el receptor depende tanto de la sincronización como del canal.
 
 \begin{figure*}[!t]
     \centering
     \includegraphics[width=0.92\textwidth]{Figuras/validacion_todas.png}
-    \caption{Pestaña \emph{Validación} de las seis pruebas: BER en una ventana de $10^5$ bits y bits transmitidos (abajo, retrasados 11 bits) frente a bits recuperados (arriba, desplazados $+1.5$).}
+    \caption{Pestaña \emph{Validación} de las siete pruebas: BER en una ventana de $10^5$ bits y bits transmitidos (abajo, retrasados 11 bits) frente a bits recuperados (arriba, desplazados $+1.5$).}
     \label{fig:validacion}
 \end{figure*}
-\textbf{Validación.} En las pruebas A a E la BER de la ventana es 0.000000 y las dos secuencias de bits son idénticas, desplazadas solo por el retardo de 11 bits ya compensado. En la prueba F la BER es 0.2503 y se ven bits recuperados que no coinciden con los transmitidos.
+\textbf{Validación.} En la prueba 0 y en las pruebas A a E la BER de la ventana es 0.000000 y las dos secuencias de bits son idénticas, desplazadas solo por el retardo de 11 bits ya compensado. En la prueba F la BER es 0.2498 y se ven bits recuperados que no coinciden con los transmitidos.
 
 \subsection{Ventanas de las curvas BER (Fase 4)}
 \label{app:ventanas}

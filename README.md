@@ -162,7 +162,7 @@ Archivos: `grc/fase3_hardware/` (TX y RX para cada radio). La guía completa de 
 | Bloque | Osmocom Sink / Source | UHD: USRP Sink / Source |
 | radio_rate | 2 MS/s | 1 MS/s |
 | Remuestreo Tx | ×125/16 | ×125/32 |
-| fc | 915 MHz (LO a fc ∓ 200 kHz) | igual |
+| fc | 960 MHz, la de la práctica del laboratorio (LO a fc ∓ 200 kHz) | igual |
 | Receptor | AGC → FLL → PFB Clock Sync → Costas (orden 2) → decisión → decodificación diferencial | igual |
 
 Rs, SPS, β, el mapeo y la decisión no cambian. Se quitó el Throttle porque el radio fija la tasa de muestras.
@@ -191,6 +191,17 @@ Con A_imp = 5, uno de cada 32 símbolos pierde la mitad de su distancia al umbra
 ## Práctica de laboratorio con antenas (5 de noviembre)
 
 En `laboratorio_hackrf_5nov/` están los flujogramas del docente (16-QAM, HackRF, 960 MHz), las capturas de Tx y Rx y el registro de consola. Resultado: constelación 16-QAM recuperada, 2601 tramas y 89.2 % con CRC correcto. En el tramo final: EVM ≈ 5.3 % y BER ≈ 8·10⁻⁴. Esta práctica sirvió para validar el hardware; el enlace del proyecto en hardware son los archivos `grc/fase3_hardware/`.
+
+---
+
+## Ramas del repositorio
+
+| Rama | Contenido |
+|---|---|
+| `fase1-canal-impulsivo` | Estado entregado el 24 de octubre: canal con impulsos (Selector Guiado). |
+| `fase2-3-4-receptor-sdr-ber` | Primer avance de las Fases 2, 3 y 4: receptor propio, flujogramas SDR e instrumento BER. |
+| `fase4-curvas-gnuradio` | Capturas de GNU Radio y curvas BER medidas; correcciones del kit BER. |
+| `main` | Versión final con el informe completo. |
 
 ---
 

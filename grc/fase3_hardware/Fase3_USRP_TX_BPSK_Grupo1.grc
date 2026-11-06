@@ -220,8 +220,8 @@ blocks:
 - name: fc
   id: variable
   parameters:
-    comment: 'Frecuencia RF central: banda ISM 902-928 MHz (Region 2). Confirmar con el docente.'
-    value: 915e6
+    comment: Frecuencia central RF usada en la practica de laboratorio (960 MHz). Confirmar con el docente.
+    value: 960e6
   states:
     bus_sink: false
     bus_source: false

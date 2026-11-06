@@ -1,7 +1,9 @@
 \section{Resultados y discusión}
 \label{sec:resultados}
 
-La Fig.~\ref{fig:flujograma} muestra el flujograma del enlace completo de la Fase~2. Las figuras de las secciones de espectro y receptor son capturas de ese flujograma en ejecución, con AWGN de amplitud 0.10 y la BER medida sobre una ventana de $10^5$ bits. Para los márgenes de decisión y como verificación de las curvas BER se usó además una simulación numérica que reproduce el flujograma bloque a bloque: los mismos 89 coeficientes RRC en Tx y Rx, el mismo retardo de 11 bits, la misma regla de decisión y la misma ley de inyección de ruido de la ecuación~\eqref{eq:pn}. Ambas coinciden: el flujograma midió BER $=0$ en las pruebas A a E y 0.2503 con 4 muestras de desfase, y la simulación dio 0 y 0.25.
+La Fig.~\ref{fig:flujograma} muestra el flujograma del enlace completo de la Fase~2. Las figuras de las secciones de espectro y receptor son capturas de ese flujograma en ejecución, con AWGN de amplitud 0.10 y la BER medida sobre una ventana de $10^5$ bits. Para los márgenes de decisión y como verificación de las curvas BER se usó además una simulación numérica que reproduce el flujograma bloque a bloque: los mismos 89 coeficientes RRC en Tx y Rx, el mismo retardo de 11 bits, la misma regla de decisión y la misma ley de inyección de ruido de la ecuación~\eqref{eq:pn}. Ambas coinciden: el flujograma midió BER $=0$ en las pruebas A a E y 0.2498 con 4 muestras de desfase, y la simulación dio 0 y 0.25.
+
+Antes de las pruebas con perturbación, el receptor se validó en condición ideal, sin ruido ni impulsos (prueba 0, Anexo~\ref{app:capturas}). En ese caso la PSD del canal coincide con la del transmisor, la constelación recuperada se reduce a dos puntos exactos en $\pm1$ y la BER es cero: el filtro acoplado, el muestreo con desfase 0 y la referencia retrasada 11 bits funcionan sin errores antes de agregar el canal del proyecto.
 
 \begin{figure*}[t]
     \centering
@@ -45,7 +47,7 @@ La explicación está en el filtro acoplado. Un impulso de una muestra no se sum
 \begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{Figuras/constelaciones.png}
-    \caption{Constelación recuperada (una muestra por símbolo) con AWGN 0.10 para cada amplitud de impulso; el último panel muestra el efecto de muestrear con 4 muestras de desfase.}
+    \caption{Constelación recuperada (una muestra por símbolo): condición ideal, cada amplitud de impulso con AWGN 0.10 y, en el último panel, el efecto de muestrear con 4 muestras de desfase.}
     \label{fig:const}
 \end{figure}
 
@@ -53,19 +55,20 @@ La Tabla~\ref{tab:fase2} resume la validación. En todas las pruebas los bits re
 
 \begin{table}[H]
     \centering
-    \caption{Validación del receptor con AWGN 0.10: BER medida en el flujograma (ventana de $10^5$ bits) y margen mínimo de la simulación ($2\times10^5$ bits)}
+    \caption{Validación del receptor (AWGN 0.10 salvo en la prueba 0): BER medida en el flujograma (ventana de $10^5$ bits) y margen mínimo de la simulación ($2\times10^5$ bits)}
     \label{tab:fase2}
     \footnotesize
     \begin{tabular}{@{}lccc@{}}
         \toprule
         \textbf{Prueba} & $\mathbf{A_{imp}}$ & \textbf{BER} & \textbf{Margen mínimo $|I|$} \\
         \midrule
+        0 (ideal, sin ruido) & 0.0 & 0 & 0.99 \\
         A (referencia) & 0.0 & 0 & 0.88 \\
         B (suave) & 0.3 & 0 & 0.88 \\
         C (media) & 0.6 & 0 & 0.85 \\
         D (fuerte) & 1.0 & 0 & 0.81 \\
         E (robustez) & 5.0 & 0 & 0.40 \\
-        F (desfase 4) & 0.0 & 0.2503 & -- \\
+        F (desfase 4) & 0.0 & 0.2498 & -- \\
         \bottomrule
     \end{tabular}
 \end{table}

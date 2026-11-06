@@ -33,7 +33,7 @@ El transmisor de la Fase 4 es el mismo de la Fase 3.
 | radio_rate | 2 MS/s | 1 MS/s | HackRF trabaja de 2 a 20 MS/s. 1 MS/s es una tasa válida en B2xx y N2xx (100 MHz / 100). |
 | Adaptación de tasa (Tx) | interp 125 / decim 16 | interp 125 / decim 32 | 256 000 · 125/16 = 2 000 000 y 256 000 · 125/32 = 1 000 000. **Rs no se cambia.** |
 | Adaptación de tasa (Rx) | interp 16 / decim 125 | interp 32 / decim 125 | Relación inversa, antes del receptor digital. |
-| fc | 915 MHz | 915 MHz | Banda ISM 902–928 MHz (Región 2). **Confirmar con el docente** la frecuencia autorizada en el laboratorio (el ejemplo del curso usa 960 MHz). |
+| fc | 960 MHz | 960 MHz | Frecuencia usada en la práctica del laboratorio (5 nov). Confirmar con el docente antes de transmitir. |
 | lo_off | 200 kHz | 200 kHz | El LO del Tx se sintoniza en fc − lo_off y el del Rx en fc + lo_off; la señal se desplaza digitalmente. Así queda lejos de la espiga de DC del conversor. |
 | Ganancia Tx | IF/VGA 20 dB, amplificador RF (gain0) en 0 | gain 20 dB | Empezar bajo, sobre todo por cable. |
 | Ganancia Rx | LNA 16 dB, VGA 20 dB, amplificador RF en 0 | gain 30 dB | Subir de a poco hasta ver la señal sin saturar. |
@@ -76,7 +76,7 @@ El transmisor de la Fase 4 es el mismo de la Fase 3.
 4. **Si el Tx genera muestras más lento que el SDR:** el radio se queda sin datos (underflow, "U" en la consola) y transmite huecos, lo que rompe la sincronización del receptor.
 5. **Amplitud digital frente a ganancia RF:** la amplitud digital usa el rango del DAC y, si |x| > 1, satura y genera distorsión. La ganancia RF amplifica la señal ya convertida y sube también el ruido de las etapas siguientes. Lo correcto es una amplitud digital moderada (pico < 1) y ajustar la potencia con la ganancia.
 6. **¿Qué limita la tasa útil?** Todos: el conversor del SDR, el bus (USB 2.0 en HackRF, USB 3.0 en B2xx, Gigabit Ethernet en N2xx) y la capacidad del computador para ejecutar los bloques en tiempo real.
-7. **Offset entre radios:** cada radio tiene su propio oscilador con una tolerancia de algunos ppm. A 915 MHz, 10 ppm ≈ 9 kHz de diferencia. Por eso el receptor lleva un FLL y un lazo de Costas.
+7. **Offset entre radios:** cada radio tiene su propio oscilador con una tolerancia de algunos ppm. A 960 MHz, 10 ppm ≈ 9.6 kHz de diferencia. Por eso el receptor lleva un FLL y un lazo de Costas.
 8. **Qué se conserva y qué aparece:** se conservan modulación, Rs, Rb, SPS, β, span, mapeo y el receptor digital. Aparecen fc, radio_rate, remuestreo, ganancias, ancho de banda RF, antena/puerto, reloj, lo_off y la sincronización de portadora y reloj.
 9. **Riesgo de conectar dos radios sin atenuación:** la potencia del Tx puede superar el nivel máximo de entrada del Rx (por ejemplo, unos −5 dBm en HackRF) y dañar el LNA.
 10. **Cómo saber si el problema es de RF y no de la modulación:** si el mismo flujograma funciona en simulación pero en hardware el espectro aparece desplazado, saturado, con espiga de DC o con offset estimado por el FLL distinto de cero, el problema está en la configuración RF. Si el espectro es correcto pero la constelación no, el problema está en la sincronización o la decisión.
