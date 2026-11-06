@@ -3,11 +3,14 @@
 **Escenario:** S1 · Telemetría industrial bajo perturbaciones impulsivas
 **Curso:** Comunicaciones II (27145) — UIS, 2026-2
 **Integrantes:** Julian Camilo Acevedo Salamanca, Luigy Andrey Amado Durán, Juan Camilo Salazar Ariza
-**Última actualización:** 24 de octubre de 2026
+**Última actualización:** 6 de noviembre de 2026
+**Informe final (plantilla IEEE del curso):** [informe/Informe_Final_Grupo1_S1.pdf](informe/Informe_Final_Grupo1_S1.pdf)
 
 ---
 
-## Resumen
+## Fase 1 — Canal con ruido impulsivo
+
+### Resumen
 
 En una planta industrial, un nodo envía variables lentas (temperatura, vibración, estado de una máquina) hacia la estación de supervisión. Al conmutar, motores, contactores y variadores generan perturbaciones muy breves y de gran amplitud que afectan algunas muestras de la señal. En este proyecto modelamos ese fenómeno en banda base con GNU Radio: un enlace BPSK con AWGN fijo al que se le suma un tren periódico de impulsos controlados. Mantenemos Rs, SPS y fs fijos y solo cambiamos la amplitud del impulso, en cuatro pruebas (referencia, suave, media y fuerte). Los impulsos se ven claramente en la señal temporal y en la constelación, pero casi nada en la PSD, porque su potencia media (A²/256) es menor que la del AWGN.
 
@@ -123,6 +126,73 @@ En el enlace BPSK de telemetría (Rs = 32 ksym/s, fs = 256 kS/s), el ruido impul
 
 ---
 
+## Fase 2 — Receptor propio y enlace completo
+
+Archivo: `grc/fase2_receptor/Fase2_Enlace_BPSK_TxRx_Grupo1.grc`
+
+```
+PRBS-15 → BPSK (−1, +1) → RRC Tx (β = 0.35, span 11, 89 coef., ganancia Sps)
+  → Throttle → + AWGN (0.10) → + impulsos (A_imp, 1 cada 256 muestras)
+  → RRC Rx acoplado (h/Σh²) → diagrama de ojo
+  → Keep 1 in 8 (desfase 0) → decisión por mínima distancia → bits
+  → XOR con los bits Tx retrasados 11 → promedio móvil de 100 000 bits = BER
+```
+
+- El retardo total Tx + Rx es de 88 muestras = 11 símbolos. Por eso se toma la muestra con desfase 0 y la referencia se retrasa 11 bits.
+- En los instantes de decisión, el filtro acoplado deja cada impulso en 0.100·A_imp.
+
+| Prueba | A_imp | BER (2·10⁵ bits) | Margen mínimo \|I\| |
+|---|---|---|---|
+| A | 0.0 | 0 | 0.88 |
+| B | 0.3 | 0 | 0.88 |
+| C | 0.6 | 0 | 0.85 |
+| D | 1.0 | 0 | 0.81 |
+| E | 5.0 | 0 | 0.40 |
+
+Muestrear con 4 muestras de desfase (en el cruce del ojo) sube la BER a 0.25 sin cambiar el canal.
+
+Figuras: `figures/fase2_fase4/` (PSD, señal en el tiempo, ojos, constelaciones, bits Tx vs Rx y flujograma).
+
+## Fase 3 — Hardware SDR (HackRF One / USRP)
+
+Archivos: `grc/fase3_hardware/` (TX y RX para cada radio). La guía completa de laboratorio está en [docs/Guia_laboratorio_hardware_Grupo1.md](docs/Guia_laboratorio_hardware_Grupo1.md).
+
+| Parámetro | HackRF One | USRP |
+|---|---|---|
+| Bloque | Osmocom Sink / Source | UHD: USRP Sink / Source |
+| radio_rate | 2 MS/s | 1 MS/s |
+| Remuestreo Tx | ×125/16 | ×125/32 |
+| fc | 915 MHz (LO a fc ∓ 200 kHz) | igual |
+| Receptor | AGC → FLL → PFB Clock Sync → Costas (orden 2) → decisión → decodificación diferencial | igual |
+
+Rs, SPS, β, el mapeo y la decisión no cambian. Se quitó el Throttle porque el radio fija la tasa de muestras.
+
+## Fase 4 — Curva BER vs Eb/N0
+
+- Simulación de referencia: `grc/fase4_ber/simulacion/`, con `e_EbN0_Sweep`, `e_BER_Curve` y el CSV. Barrido de 0 a 14 dB, 10⁵ bits por punto.
+- Hardware: `grc/fase4_ber/hardware/`. El bloque `e_Busca_Retardo` imprime el `delay_bits` que hay que usar.
+- Curvas: `data/curvas_ber/curva_BER_sim_AWGN.csv`, `..._Impulsos_A1.csv` y `..._Impulsos_A5.csv`.
+
+| Condición | Eb/N0 para BER = 1e-3 | Penalización |
+|---|---|---|
+| Teoría BPSK coherente | 6.79 dB | — |
+| Teoría BPSK con codificación diferencial | 7.33 dB | referencia |
+| Simulado, sin impulsos | 7.28 dB | −0.05 dB |
+| Simulado, A_imp = 1 | 7.32 dB | −0.01 dB |
+| Simulado, A_imp = 5 | 9.12 dB | +1.79 dB |
+
+Con A_imp = 5, uno de cada 32 símbolos pierde la mitad de su distancia al umbral y la curva cae lentamente (9·10⁻⁶ a 14 dB).
+
+![Curva BER](figures/fase2_fase4/curva_ber.png)
+
+`scripts/` contiene la simulación numérica del mismo enlace con la que se generaron las figuras y las curvas del informe.
+
+## Práctica de laboratorio con antenas (5 de noviembre)
+
+En `laboratorio_hackrf_5nov/` están los flujogramas del docente (16-QAM, HackRF, 960 MHz), las capturas de Tx y Rx y el registro de consola. Resultado: constelación 16-QAM recuperada, 2601 tramas y 89.2 % con CRC correcto. En el tramo final: EVM ≈ 5.3 % y BER ≈ 8·10⁻⁴. Esta práctica sirvió para validar el hardware; el enlace del proyecto en hardware son los archivos `grc/fase3_hardware/`.
+
+---
+
 ## Estructura del repositorio
 
 ```
@@ -130,15 +200,21 @@ ComunicacionesII_Grupo01/
 ├── README.md
 ├── grc/
 │   ├── archivos_originales_o_referencia/   (GRC original del curso)
-│   ├── archivos_modificados/               (GRC del proyecto)
-│   └── GRC_modificado_Enlace_Beta_Impulsivo.png
+│   ├── archivos_modificados/               (Fase 1: canal con impulsos)
+│   ├── fase2_receptor/                     (enlace Tx–canal–Rx)
+│   ├── fase3_hardware/                     (HackRF / USRP)
+│   └── fase4_ber/{simulacion,hardware}/    (curvas BER)
 ├── figures/
-│   ├── tiempo/
-│   ├── psd/
-│   └── constelacion_o_fsk/
+│   ├── tiempo/ psd/ constelacion_o_fsk/    (Fase 1)
+│   └── fase2_fase4/
 ├── data/
-│   └── tablas_de_pruebas/
+│   ├── tablas_de_pruebas/
+│   └── curvas_ber/
+├── informe/                                (PDF y código LaTeX)
+├── laboratorio_hackrf_5nov/                (evidencia de la práctica con antenas)
+├── scripts/
 └── docs/
     ├── ficha_decision_tecnica.pdf
-    └── bitacora.md
+    ├── bitacora.md
+    └── Guia_laboratorio_hardware_Grupo1.md
 ```

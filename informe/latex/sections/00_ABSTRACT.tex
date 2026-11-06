@@ -1,0 +1,11 @@
+
+\begin{abstract}
+An industrial telemetry link was designed for a process plant where motors, contactors and variable-frequency drives produce short, high-amplitude impulsive disturbances. The baseband model uses BPSK at $R_s=32$~ksym/s ($R_b=32$~kb/s), 8 samples per symbol and root-raised-cosine (RRC) pulse shaping with $\beta=0.35$, over a channel with additive white Gaussian noise plus a controlled periodic impulse train. The receiver applies an RRC matched filter, samples once per symbol at the eye maximum (offset 0, total delay of 11 symbols) and takes a minimum-distance decision. At the decision instants the matched filter reduces a single-sample impulse to 10\,\% of its amplitude, so with the project noise level no bit errors occurred for impulse amplitudes up to 5, although the decision margin fell from 0.88 to 0.40. The impulses were clearly visible in the time domain and in the constellation but barely in the power spectral density, where they only raised the floor and added a 1~kHz line comb. With differential encoding, the simulated link reached a BER of $10^{-3}$ at $E_b/N_0=7.3$~dB, in agreement with theory; impulses of amplitude 1 caused no measurable penalty, whereas impulses of amplitude 5 caused a 1.8~dB penalty and a slowly decaying curve, explained by the symbols adjacent to each impulse. The link was also configured for HackRF One and USRP radios, together with the BER instrumentation for the experimental comparison.
+\end{abstract}
+
+\begin{IEEEkeywords}
+BPSK, ruido impulsivo, filtro acoplado, RRC, BER, SDR, telemetría industrial; BPSK, impulsive noise, matched filter, root-raised cosine, bit error rate, software-defined radio.
+\end{IEEEkeywords}
+
+{\raggedright
+\textit{Repositorio:} \href{https://github.com/juliancamiloacevedosalamanca-ship-it/ComunicacionesII_Grupo01}{github.com/juliancamiloacevedosalamanca-ship-it/ComunicacionesII\_Grupo01}\par}

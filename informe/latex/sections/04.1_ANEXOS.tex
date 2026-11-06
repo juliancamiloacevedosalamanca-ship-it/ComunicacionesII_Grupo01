@@ -1,0 +1,77 @@
+
+% ANEXOS
+
+\section{ANEXOS}
+
+\subsection{Bloque de calibración del retardo Tx--Rx}
+\label{app:retardo}
+
+El bloque \texttt{e\_Busca\_Retardo} acumula bits transmitidos y recuperados, calcula su correlación cruzada mediante FFT y reporta el retardo que maximiza la coincidencia; una correlación negativa indica bits invertidos.
+
+\begin{lstlisting}[style=bonito,
+                   caption={Bloque \texttt{e\_Busca\_Retardo} para calibrar \texttt{delay\_bits}},
+                   label={lst:retardo}]
+import numpy as np
+from gnuradio import gr
+
+class blk(gr.sync_block):
+    def __init__(self, n_bits=40000, max_lag=33000):
+        gr.sync_block.__init__(self, name='e_Busca_Retardo',
+                               in_sig=[np.int8, np.int8], out_sig=None)
+        self.n_bits, self.max_lag = int(n_bits), int(max_lag)
+        self.tx, self.rx = [], []
+        self.total = self.n_bits + self.max_lag
+
+    def work(self, input_items, output_items):
+        self.tx.extend((input_items[0] & 1).tolist())
+        self.rx.extend((input_items[1] & 1).tolist())
+        if min(len(self.tx), len(self.rx)) >= self.total:
+            tx = 2.0*np.array(self.tx[:self.total]) - 1.0
+            rx = 2.0*np.array(self.rx[self.max_lag:self.total]) - 1.0
+            n = 1 << int(np.ceil(np.log2(len(tx) + len(rx))))
+            corr = np.fft.irfft(np.fft.rfft(tx, n) *
+                                np.conj(np.fft.rfft(rx, n)), n)
+            c = corr[:self.max_lag + 1][::-1] / len(rx)
+            lag = int(np.argmax(np.abs(c)))
+            print(f"delay_bits = {lag}  corr = {c[lag]:+.3f}")
+            self.tx = self.tx[self.total:]
+            self.rx = self.rx[self.total:]
+        return len(input_items[0])
+\end{lstlisting}
+
+\subsection{Parámetros de la interfaz SDR}
+\label{app:sdr}
+
+\begin{table}[H]
+    \centering
+    \caption{Configuración de HackRF One y USRP}
+    \label{tab:sdr}
+    \footnotesize
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular}{@{}lcc@{}}
+        \toprule
+        \textbf{Parámetro} & \textbf{HackRF One} & \textbf{USRP} \\
+        \midrule
+        Bloque Tx / Rx & Osmocom Sink / Source & UHD Sink / Source \\
+        Selección & \texttt{hackrf=0} & dirección o serial \\
+        Tasa del radio & 2 MS/s & 1 MS/s \\
+        Remuestreo Tx & $\times125/16$ & $\times125/32$ \\
+        $f_c$ Tx / Rx & $f_c-200$ kHz / $f_c+200$ kHz & igual \\
+        Ganancia Tx & IF 20 dB, amp. RF apagado & 20 dB \\
+        Ganancia Rx & LNA 16 dB, VGA 20 dB & 30 dB \\
+        Ancho de banda RF & automático & automático \\
+        Antena & -- & TX/RX y RX2 \\
+        Bias-T / reloj & apagado / interno & -- / interno \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+
+\subsection{Evidencia del transmisor en el laboratorio}
+\label{app:lab}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/lab_tx_espectro.png}
+    \caption{Transmisor HackRF de la práctica de laboratorio: espectro en banda base antes del radio (16-QAM con RRC de roll-off 0.5).}
+    \label{fig:lab_tx}
+\end{figure}

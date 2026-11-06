@@ -1,0 +1,133 @@
+\section{Resultados y discusión}
+\label{sec:resultados}
+
+La Fig.~\ref{fig:flujograma} muestra el flujograma del enlace completo de la Fase~2. Las señales y las curvas de esta sección se obtuvieron con una simulación numérica que reproduce ese flujograma bloque a bloque: los mismos 89 coeficientes RRC en Tx y Rx, el mismo retardo de 11 bits, la misma regla de decisión y, para las curvas BER, la misma ley de inyección de ruido de la ecuación~\eqref{eq:pn}. En cada condición se transmitieron $2\times10^5$ bits.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Figuras/flujograma_fase2.png}
+    \caption{Flujograma del enlace de la Fase~2: transmisor PRBS--BPSK--RRC, canal con AWGN y tren de impulsos, receptor con filtro acoplado, muestreo y decisión, y comparación de bits con la referencia retrasada 11 bits.}
+    \label{fig:flujograma}
+\end{figure*}
+
+\subsection{Espectro y señal en el canal}
+En la Fig.~\ref{fig:psd}, la señal a la salida del RRC del transmisor ocupa $\pm21.6$~kHz, como predice la ecuación~\eqref{eq:bw}, y sus lóbulos laterales caen por debajo de $-30$~dB fuera de esa banda. Al agregar el canal, el AWGN fija un piso plano cerca de $-19$~dB. Con $A_{imp}=1$ el espectro casi no cambia: la potencia media del tren de impulsos es $1/256\approx0.004$, menos de la mitad de la del AWGN, y el piso sube apenas 1.5~dB. Con $A_{imp}=5$ la potencia del tren es $25/256\approx0.098$, el piso sube unos 10~dB y aparece un peine de líneas separadas 1~kHz, que es la frecuencia de repetición de los impulsos (un impulso cada 256 muestras a 256~kS/s). La PSD, por ser un promedio, informa poco sobre el riesgo real: un evento de amplitud 5 en una sola muestra apenas se nota en ella.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/psd.png}
+    \caption{PSD a la salida del RRC del transmisor y a la salida del canal (AWGN 0.10 con $A_{imp}=1$ y $A_{imp}=5$).}
+    \label{fig:psd}
+\end{figure}
+
+En el dominio del tiempo (Fig.~\ref{fig:tiempo}), en cambio, el impulso sí es visible: aparece solo en la componente I, porque es real, cada 1~ms. Su efecto depende del símbolo que coincide con él: sobre un nivel positivo produce un pico que supera 2, y sobre uno negativo reduce el nivel hacia cero.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/tiempo_canal.png}
+    \caption{Envolvente compleja a la salida del canal con $A_{imp}=1$ (8~ms). Los triángulos marcan los instantes de los impulsos.}
+    \label{fig:tiempo}
+\end{figure}
+
+\subsection{Receptor: ojo, constelación y bits}
+La Fig.~\ref{fig:ojos} muestra el ojo a la salida del filtro acoplado. Con $A_{imp}=0$ las trayectorias convergen en $\pm1$ en los instantes de muestreo: la cascada RRC--RRC se comporta como un coseno alzado y no deja interferencia intersimbólica. Con $A_{imp}=0.6$ y $1.0$ el ojo es prácticamente el mismo. Solo con $A_{imp}=5$ aparecen trayectorias aisladas que se salen del haz, y aun así el ojo sigue abierto en el centro.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/ojos.png}
+    \caption{Diagramas de ojo a la salida del filtro acoplado (componente I, dos símbolos).}
+    \label{fig:ojos}
+\end{figure}
+
+La explicación está en el filtro acoplado. Un impulso de una muestra no se suma de forma directa a la variable de decisión: sale del filtro convertido en la forma del pulso, escalado por $1/\sum h^2$. Como el período de 256 muestras es múltiplo de SPS~$=8$, el impulso cae siempre en la misma fase dentro del símbolo, y en los instantes de muestreo su contribución máxima es $0.100\,A_{imp}$ (algo menor que la cota de 0.137 de la ecuación~\eqref{eq:atenuacion}, que corresponde al pico del pulso). Con $A_{imp}=1$ la muestra más afectada se corre $0.10$, frente a una distancia de 1 al umbral. Por eso la constelación recuperada (Fig.~\ref{fig:const}) mantiene dos nubes compactas en $\pm1$ hasta $A_{imp}=1$. Con $A_{imp}=5$ aparecen grupos de puntos desplazados hacia $\pm0.5$ y $\pm1.5$, que corresponden a los símbolos vecinos al impulso.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/constelaciones.png}
+    \caption{Constelación recuperada (una muestra por símbolo) con AWGN 0.10 para cada amplitud de impulso; el último panel muestra el efecto de muestrear con 4 muestras de desfase.}
+    \label{fig:const}
+\end{figure}
+
+La Tabla~\ref{tab:fase2} resume la validación. En todas las pruebas los bits recuperados coinciden con los transmitidos una vez se compensan los 11 bits de retardo (Fig.~\ref{fig:bits}). El margen mínimo, es decir el menor $|I|$ observado en las muestras de decisión, cae de 0.88 a 0.40 cuando $A_{imp}$ pasa de 0 a 5. Sin AWGN, el primer error aparecería cuando $0.100\,A_{imp}>1$, es decir para $A_{imp}\approx10$.
+
+\begin{table}[H]
+    \centering
+    \caption{Validación del receptor con AWGN 0.10 ($2\times10^5$ bits por prueba)}
+    \label{tab:fase2}
+    \footnotesize
+    \begin{tabular}{@{}lccc@{}}
+        \toprule
+        \textbf{Prueba} & $\mathbf{A_{imp}}$ & \textbf{BER} & \textbf{Margen mínimo $|I|$} \\
+        \midrule
+        A (referencia) & 0.0 & 0 & 0.88 \\
+        B (suave) & 0.3 & 0 & 0.88 \\
+        C (media) & 0.6 & 0 & 0.85 \\
+        D (fuerte) & 1.0 & 0 & 0.81 \\
+        E (robustez) & 5.0 & 0 & 0.40 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/bits_tx_rx.png}
+    \caption{Bits transmitidos (retrasados 11 bits) y bits recuperados con $A_{imp}=1$.}
+    \label{fig:bits}
+\end{figure}
+
+El instante de muestreo resultó tan determinante como el canal. Con el desfase correcto (0 muestras) el margen es 0.88; con 2 muestras de error baja a 0.18, y con 4 muestras ---el cruce del ojo--- la BER sube a 0.25 sin que el canal haya cambiado. Este resultado justifica calcular el retardo total del enlace (88 muestras, 11 símbolos) antes de fijar el muestreo y, en hardware, recuperar el reloj de forma adaptativa.
+
+\subsection{Curvas BER}
+La Fig.~\ref{fig:ber} compara las curvas simuladas con la teoría. Sin impulsos, la curva coincide con la de BPSK con codificación diferencial: $E_b/N_0=7.28$~dB para BER $=10^{-3}$, frente a 7.33~dB teóricos y 6.79~dB de BPSK coherente sin codificación diferencial. Esa diferencia de unos 0.5~dB es el costo de resolver la ambigüedad de fase, porque un error de símbolo produce dos errores de bit consecutivos. Con $A_{imp}=1$ la curva no se distingue de la referencia (7.32~dB), lo que confirma lo observado en el ojo.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/curva_ber.png}
+    \caption{BER frente a $E_b/N_0$: teoría BPSK, teoría con codificación diferencial y curvas simuladas del enlace con $A_{imp}=0$, 1 y 5 ($4\times10^5$ a $4\times10^6$ bits por punto).}
+    \label{fig:ber}
+\end{figure}
+
+Con $A_{imp}=5$ la curva se separa: requiere 9.12~dB para BER $=10^{-3}$ (1.8~dB más que la referencia) y, en lugar de caer en forma de cascada, decrece lentamente: $2.7\times10^{-4}$ a 11~dB y $9\times10^{-6}$ a 14~dB, donde la referencia ya no registra errores. El comportamiento se explica con un modelo simple. De cada 32 símbolos, el más cercano al impulso pierde la mitad de su distancia al umbral ($1-0.100\times5=0.5$), es decir, unos 6~dB de relación señal a ruido, y a alta $E_b/N_0$ son esos símbolos los que producen casi todos los errores. Promediando la probabilidad de error de cada símbolo según su desplazamiento se obtienen $1.1\times10^{-3}$ a 9~dB y $2.7\times10^{-4}$ a 11~dB, valores que coinciden con la simulación. Parte de la penalización, unos 0.4~dB, es aparente: el instrumento mide la potencia recibida incluyendo los impulsos y asigna ruido con base en ella.
+
+\begin{table}[H]
+    \centering
+    \caption{$E_b/N_0$ requerido para BER $=10^{-3}$}
+    \label{tab:ber}
+    \footnotesize
+    \begin{tabular}{@{}lcc@{}}
+        \toprule
+        \textbf{Condición} & $\mathbf{E_b/N_0}$ \textbf{[dB]} & \textbf{Penalización [dB]} \\
+        \midrule
+        Teoría BPSK coherente & 6.79 & -- \\
+        Teoría con cod. diferencial & 7.33 & referencia \\
+        Simulado, sin impulsos & 7.28 & $-0.05$ \\
+        Simulado, $A_{imp}=1$ & 7.32 & $-0.01$ \\
+        Simulado, $A_{imp}=5$ & 9.12 & $+1.79$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Prueba con hardware en el laboratorio}
+El 5 de noviembre se ejecutó en el laboratorio la práctica de enlace del curso con dos HackRF One: 16-QAM con mapeo Gray, $R_s=8$~ksym/s ($R_b=32$~kb/s, la misma tasa de bits del proyecto), SPS~$=8$, RRC con roll-off de 0.5, tramas conocidas con CRC-32, $f_c=960$~MHz, radio a 2~MS/s con remuestreo $\times125/4$, LO desplazado 200~kHz, ganancia IF de Tx de 20~dB y amplitud digital de 0.15, sin AWGN digital. El receptor usa AGC, lazo de frecuencia de borde de banda, sincronización de reloj polifásica, recuperación de portadora por constelación y correlación de la trama con las cuatro rotaciones de fase. Los flujogramas, las capturas y el registro de consola se adjuntan como evidencia. En el Anexo~\ref{app:lab} se muestra el espectro del transmisor, de unos $(1+0.5)\times8=12$~kHz de ancho. Esta prueba sirvió para validar la cadena física que usan los flujogramas del proyecto: conversión de tasa, radio, control de ganancia, lazo de frecuencia, recuperación de reloj y de portadora, y resolución de la ambigüedad de fase.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/lab_rx_16qam.jpg}
+    \caption{Receptor HackRF en el laboratorio: espectro alrededor de 960~MHz y constelación 16-QAM recuperada tras la sincronización de portadora y reloj.}
+    \label{fig:lab_rx}
+\end{figure}
+
+En la Fig.~\ref{fig:lab_rx} la señal aparece en 960~MHz unos 30~dB por encima del piso de ruido, junto a una espiga en 960.2~MHz que se mantiene aun sin transmisión. Esa espiga es la componente de continua del receptor, cuyo oscilador está sintonizado en $f_c+200$~kHz; la misma estrategia de desplazar el oscilador ($\pm200$~kHz) se usó en los flujogramas del proyecto para que la componente de continua no caiga sobre la señal. La constelación recuperada muestra los 16 puntos separados, con una leve rotación residual dentro de cada nube. Cuando el transmisor se detuvo, el espectro quedó plano y la constelación se convirtió en una nube de ruido, lo que confirma que los puntos provenían del enlace y no de un artefacto del receptor.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{Figuras/lab_metricas.png}
+    \caption{Evolución de la BER y la EVM acumuladas reportadas por el receptor a lo largo de 2601 tramas.}
+    \label{fig:lab_metricas}
+\end{figure}
+
+El receptor reporta la BER y la EVM acumuladas desde el arranque (Fig.~\ref{fig:lab_metricas}). Al final se registraron 2601 tramas, 89.2\,\% de ellas con CRC correcto, una BER acumulada de 0.42\,\% y una EVM de 8.5\,\%. Esos valores mezclan la etapa de adquisición con la de régimen. Al restar los acumulados entre dos lecturas se obtiene el desempeño del tramo final (tramas 1951 a 2601): BER $\approx8\times10^{-4}$, EVM $\approx5.3$\,\% (MER $\approx25$~dB) y 95\,\% de tramas válidas. En las últimas 50 tramas, 49 pasaron el CRC. Con 25~dB de MER, la BER teórica de 16-QAM es despreciable, de modo que los errores restantes no se deben al ruido térmico sino a eventos de sincronización. El registro lo muestra: la rotación de fase detectada salta entre 0°, 90°, 180° y 270° durante la sesión, y en varios de esos saltos (por ejemplo, en las tramas 101 y 2151) la trama reportada falla el CRC. Esto respalda la decisión de usar codificación diferencial en el enlace BPSK del proyecto y de calibrar \texttt{delay\_bits} antes de medir.
+
+\subsection{Preparación del enlace del proyecto en hardware}
+
+Los flujogramas de HackRF One y USRP conservan el transmisor y la decisión del enlace simulado, y cambian solo la interfaz con el radio (Anexo~\ref{app:sdr}). La curva simulada sin impulsos es la referencia contra la que se compara la curva experimental, con el criterio del curso de una penalización máxima de 2~dB en BER $=10^{-3}$. Antes de medir, \texttt{delay\_bits} se calibra con el bloque del Anexo~\ref{app:retardo}, porque en hardware el retardo deja de ser 11 bits: depende de los remuestreadores, de la sincronización y del instante en que arrancan el transmisor y el receptor.
