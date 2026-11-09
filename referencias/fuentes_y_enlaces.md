@@ -15,4 +15,3 @@
 ## Material del curso usado
 - `Modulaciones_basadas_en_constelaciones_AWGN.grc` (archivo base).
 - Kit de la Fase 4: `BER_SDR_INSTRUMENTACION_BASE.grc`, `e_EbN0_Sweep.py`, `e_BER_Curve.py`, `README_BER_SDR.txt`.
-- Práctica de laboratorio: `LAB_TX_16QAM_HackRF_MEJORADO.grc`, `LAB_RX_16QAM_HackRF_MEJORADO.grc`.
