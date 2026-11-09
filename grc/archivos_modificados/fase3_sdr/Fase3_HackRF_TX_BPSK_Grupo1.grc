@@ -28,11 +28,10 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 8
-    - 8
+    coordinate: [1576, 40.0]
     rotation: 0
     state: enabled
+
 blocks:
 - name: M
   id: variable
@@ -43,9 +42,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 808
-    - 110
+    coordinate: [440, 52.0]
     rotation: 0
     state: enabled
 - name: Rb
@@ -57,9 +54,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 8
-    - 220
+    coordinate: [8, 220]
     rotation: 0
     state: enabled
 - name: Rs
@@ -71,9 +66,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 8
-    - 110
+    coordinate: [8, 124.0]
     rotation: 0
     state: enabled
 - name: Sps
@@ -85,31 +78,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 208
-    - 110
-    rotation: 0
-    state: enabled
-- name: adapta_tasa
-  id: rational_resampler_xxx
-  parameters:
-    comment: ''
-    affinity: ''
-    alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    interp: interp
-    decim: decim
-    taps: '[]'
-    fbw: '0'
-    type: ccc
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 960
-    - 330
+    coordinate: [16, 44.0]
     rotation: 0
     state: enabled
 - name: beta
@@ -121,9 +90,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 208
-    - 220
+    coordinate: [112, 228.0]
     rotation: 0
     state: enabled
 - name: bps
@@ -135,28 +102,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1008
-    - 110
-    rotation: 0
-    state: enabled
-- name: cod_diferencial
-  id: digital_diff_encoder_bb
-  parameters:
-    comment: ''
-    affinity: ''
-    alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    modulus: '2'
-    coding: digital.DIFF_DIFFERENTIAL
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 178
-    - 530
+    coordinate: [536, 60.0]
     rotation: 0
     state: enabled
 - name: const_bpsk
@@ -176,9 +122,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1208
-    - 220
+    coordinate: [1088, 36.0]
     rotation: 0
     state: enabled
 - name: decim
@@ -190,31 +134,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 610
-    - 620
-    rotation: 0
-    state: enabled
-- name: desplaza_lo
-  id: freq_xlating_fir_filter_xxx
-  parameters:
-    comment: ''
-    affinity: ''
-    alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    center_freq: -lo_off
-    decim: '1'
-    samp_rate: radio_rate
-    taps: '[1]'
-    type: ccc
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1160
-    - 330
+    coordinate: [464, 228.0]
     rotation: 0
     state: enabled
 - name: fc
@@ -226,77 +146,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 8
-    - 620
-    rotation: 0
-    state: enabled
-- name: fuente_bits
-  id: digital_glfsr_source_x
-  parameters:
-    comment: ''
-    affinity: ''
-    alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: byte
-    degree: '15'
-    mask: '0'
-    repeat: 'True'
-    seed: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 8
-    - 420
-    rotation: 0
-    state: enabled
-- name: hackrf_sink
-  id: osmosdr_sink
-  parameters:
-    comment: ''
-    affinity: ''
-    alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    args: '"hackrf=0"'
-    sample_rate: radio_rate
-    freq0: fc - lo_off
-    corr0: '0'
-    gain0: '0'
-    if_gain0: tx_vga
-    bb_gain0: '20'
-    ant0: '""'
-    bw0: '0'
-    nchan: '1'
-    num_mboards: '1'
-    sync: none
-    type: fc32
-    clock_source0: ''
-    time_source0: ''
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1400
-    - 320
-    rotation: 0
-    state: enabled
-- name: import_0
-  id: import
-  parameters:
-    comment: ''
-    imports: import math
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1058
-    - 220
+    coordinate: [232, 228.0]
     rotation: 0
     state: enabled
 - name: interp
@@ -308,9 +158,501 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 460
-    - 620
+    coordinate: [472, 140.0]
+    rotation: 0
+    state: enabled
+- name: lo_off
+  id: variable
+  parameters:
+    comment: ''
+    value: 200e3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [360, 228.0]
+    rotation: 0
+    state: enabled
+- name: periodo_imp
+  id: variable
+  parameters:
+    comment: ''
+    value: '256'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [232, 140.0]
+    rotation: 0
+    state: enabled
+- name: radio_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 2e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [360, 140.0]
+    rotation: 0
+    state: enabled
+- name: rrc_rx_taps
+  id: variable
+  parameters:
+    comment: ''
+    value: '[t/sum(x*x for x in rrc_tx_taps) for t in rrc_tx_taps]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 220.0]
+    rotation: 0
+    state: enabled
+- name: rrc_tx_taps
+  id: variable_rrc_filter_taps
+  parameters:
+    alpha: beta
+    comment: ''
+    gain: Sps
+    ntaps: span*Sps
+    samp_rate: samp_rate
+    sym_rate: Rs
+    value: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [688, 48.0]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: Rs*Sps
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [112, 132.0]
+    rotation: 0
+    state: enabled
+- name: span
+  id: variable
+  parameters:
+    comment: ''
+    value: '11'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [120, 52.0]
+    rotation: 0
+    state: enabled
+- name: tabla_de_verdad_constelacion
+  id: variable
+  parameters:
+    comment: ''
+    value: (-1+0j, 1+0j)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [232, 52.0]
+    rotation: 0
+    state: enabled
+- name: tx_amp
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Amplitud digital Tx (pico < 1)
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0.01'
+    step: '0.01'
+    stop: '1.0'
+    value: '0.5'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1376, 40.0]
+    rotation: 0
+    state: enabled
+- name: tx_vga
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: HackRF TX IF/VGA gain (0-47 dB)
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '47'
+    value: '20'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [872, 48.0]
+    rotation: 0
+    state: enabled
+- name: adapta_tasa
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: decim
+    fbw: '0'
+    interp: interp
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: '[]'
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1240, 436.0]
+    rotation: 0
+    state: enabled
+- name: cod_diferencial
+  id: digital_diff_encoder_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    coding: digital.DIFF_DIFFERENTIAL
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    modulus: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [208, 436.0]
+    rotation: 0
+    state: enabled
+- name: desplaza_lo
+  id: freq_xlating_fir_filter_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    center_freq: -lo_off
+    comment: ''
+    decim: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: radio_rate
+    taps: '[1]'
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1488, 452.0]
+    rotation: 0
+    state: enabled
+- name: fuente_bits
+  id: digital_glfsr_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    degree: '15'
+    mask: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repeat: 'True'
+    seed: '1'
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 420]
+    rotation: 0
+    state: enabled
+- name: hackrf_sink
+  id: osmosdr_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    ant0: '""'
+    ant1: ''
+    ant10: ''
+    ant11: ''
+    ant12: ''
+    ant13: ''
+    ant14: ''
+    ant15: ''
+    ant16: ''
+    ant17: ''
+    ant18: ''
+    ant19: ''
+    ant2: ''
+    ant20: ''
+    ant21: ''
+    ant22: ''
+    ant23: ''
+    ant24: ''
+    ant25: ''
+    ant26: ''
+    ant27: ''
+    ant28: ''
+    ant29: ''
+    ant3: ''
+    ant30: ''
+    ant31: ''
+    ant4: ''
+    ant5: ''
+    ant6: ''
+    ant7: ''
+    ant8: ''
+    ant9: ''
+    args: '"hackrf=0"'
+    bb_gain0: '20'
+    bb_gain1: '20'
+    bb_gain10: '20'
+    bb_gain11: '20'
+    bb_gain12: '20'
+    bb_gain13: '20'
+    bb_gain14: '20'
+    bb_gain15: '20'
+    bb_gain16: '20'
+    bb_gain17: '20'
+    bb_gain18: '20'
+    bb_gain19: '20'
+    bb_gain2: '20'
+    bb_gain20: '20'
+    bb_gain21: '20'
+    bb_gain22: '20'
+    bb_gain23: '20'
+    bb_gain24: '20'
+    bb_gain25: '20'
+    bb_gain26: '20'
+    bb_gain27: '20'
+    bb_gain28: '20'
+    bb_gain29: '20'
+    bb_gain3: '20'
+    bb_gain30: '20'
+    bb_gain31: '20'
+    bb_gain4: '20'
+    bb_gain5: '20'
+    bb_gain6: '20'
+    bb_gain7: '20'
+    bb_gain8: '20'
+    bb_gain9: '20'
+    bw0: '0'
+    bw1: '0'
+    bw10: '0'
+    bw11: '0'
+    bw12: '0'
+    bw13: '0'
+    bw14: '0'
+    bw15: '0'
+    bw16: '0'
+    bw17: '0'
+    bw18: '0'
+    bw19: '0'
+    bw2: '0'
+    bw20: '0'
+    bw21: '0'
+    bw22: '0'
+    bw23: '0'
+    bw24: '0'
+    bw25: '0'
+    bw26: '0'
+    bw27: '0'
+    bw28: '0'
+    bw29: '0'
+    bw3: '0'
+    bw30: '0'
+    bw31: '0'
+    bw4: '0'
+    bw5: '0'
+    bw6: '0'
+    bw7: '0'
+    bw8: '0'
+    bw9: '0'
+    clock_source0: ''
+    clock_source1: ''
+    clock_source2: ''
+    clock_source3: ''
+    clock_source4: ''
+    clock_source5: ''
+    clock_source6: ''
+    clock_source7: ''
+    comment: ''
+    corr0: '0'
+    corr1: '0'
+    corr10: '0'
+    corr11: '0'
+    corr12: '0'
+    corr13: '0'
+    corr14: '0'
+    corr15: '0'
+    corr16: '0'
+    corr17: '0'
+    corr18: '0'
+    corr19: '0'
+    corr2: '0'
+    corr20: '0'
+    corr21: '0'
+    corr22: '0'
+    corr23: '0'
+    corr24: '0'
+    corr25: '0'
+    corr26: '0'
+    corr27: '0'
+    corr28: '0'
+    corr29: '0'
+    corr3: '0'
+    corr30: '0'
+    corr31: '0'
+    corr4: '0'
+    corr5: '0'
+    corr6: '0'
+    corr7: '0'
+    corr8: '0'
+    corr9: '0'
+    freq0: fc - lo_off
+    freq1: 100e6
+    freq10: 100e6
+    freq11: 100e6
+    freq12: 100e6
+    freq13: 100e6
+    freq14: 100e6
+    freq15: 100e6
+    freq16: 100e6
+    freq17: 100e6
+    freq18: 100e6
+    freq19: 100e6
+    freq2: 100e6
+    freq20: 100e6
+    freq21: 100e6
+    freq22: 100e6
+    freq23: 100e6
+    freq24: 100e6
+    freq25: 100e6
+    freq26: 100e6
+    freq27: 100e6
+    freq28: 100e6
+    freq29: 100e6
+    freq3: 100e6
+    freq30: 100e6
+    freq31: 100e6
+    freq4: 100e6
+    freq5: 100e6
+    freq6: 100e6
+    freq7: 100e6
+    freq8: 100e6
+    freq9: 100e6
+    gain0: '0'
+    gain1: '10'
+    gain10: '10'
+    gain11: '10'
+    gain12: '10'
+    gain13: '10'
+    gain14: '10'
+    gain15: '10'
+    gain16: '10'
+    gain17: '10'
+    gain18: '10'
+    gain19: '10'
+    gain2: '10'
+    gain20: '10'
+    gain21: '10'
+    gain22: '10'
+    gain23: '10'
+    gain24: '10'
+    gain25: '10'
+    gain26: '10'
+    gain27: '10'
+    gain28: '10'
+    gain29: '10'
+    gain3: '10'
+    gain30: '10'
+    gain31: '10'
+    gain4: '10'
+    gain5: '10'
+    gain6: '10'
+    gain7: '10'
+    gain8: '10'
+    gain9: '10'
+    if_gain0: tx_vga
+    if_gain1: '20'
+    if_gain10: '20'
+    if_gain11: '20'
+    if_gain12: '20'
+    if_gain13: '20'
+    if_gain14: '20'
+    if_gain15: '20'
+    if_gain16: '20'
+    if_gain17: '20'
+    if_gain18: '20'
+    if_gain19: '20'
+    if_gain2: '20'
+    if_gain20: '20'
+    if_gain21: '20'
+    if_gain22: '20'
+    if_gain23: '20'
+    if_gain24: '20'
+    if_gain25: '20'
+    if_gain26: '20'
+    if_gain27: '20'
+    if_gain28: '20'
+    if_gain29: '20'
+    if_gain3: '20'
+    if_gain30: '20'
+    if_gain31: '20'
+    if_gain4: '20'
+    if_gain5: '20'
+    if_gain6: '20'
+    if_gain7: '20'
+    if_gain8: '20'
+    if_gain9: '20'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nchan: '1'
+    num_mboards: '1'
+    sample_rate: radio_rate
+    sync: none
+    time_source0: ''
+    time_source1: ''
+    time_source2: ''
+    time_source3: ''
+    time_source4: ''
+    time_source5: ''
+    time_source6: ''
+    time_source7: ''
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1816, 188.0]
+    rotation: 0
+    state: enabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import math
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [576, 152.0]
     rotation: 0
     state: enabled
 - name: iq_tx_radio
@@ -407,35 +749,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1400
-    - 560
-    rotation: 0
-    state: enabled
-- name: lo_off
-  id: variable
-  parameters:
-    comment: ''
-    value: 200e3
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 160
-    - 620
+    coordinate: [1840, 660.0]
     rotation: 0
     state: enabled
 - name: mapeo_bpsk
   id: digital_chunks_to_symbols_xx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
+    comment: ''
     dimension: '1'
     in_type: byte
+    maxoutbuf: '0'
+    minoutbuf: '0'
     num_ports: '1'
     out_type: complex
     symbol_table: tabla_de_verdad_constelacion
@@ -443,23 +769,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 368
-    - 420
-    rotation: 0
-    state: enabled
-- name: periodo_imp
-  id: variable
-  parameters:
-    comment: ''
-    value: '256'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 608
-    - 220
+    coordinate: [544, 452.0]
     rotation: 0
     state: enabled
 - name: psd_tx_radio
@@ -540,223 +850,58 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1400
-    - 450
-    rotation: 0
-    state: enabled
-- name: radio_rate
-  id: variable
-  parameters:
-    comment: ''
-    value: 2e6
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 310
-    - 620
-    rotation: 0
-    state: enabled
-- name: rrc_rx_taps
-  id: variable
-  parameters:
-    comment: ''
-    value: '[t/sum(x*x for x in rrc_tx_taps) for t in rrc_tx_taps]'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1208
-    - 110
+    coordinate: [1832, 476.0]
     rotation: 0
     state: enabled
 - name: rrc_tx
   id: interp_fir_filter_xxx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
+    interp: Sps
     maxoutbuf: '0'
     minoutbuf: '0'
-    interp: Sps
+    samp_delay: '0'
     taps: rrc_tx_taps
     type: ccf
-    samp_delay: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 608
-    - 420
-    rotation: 0
-    state: enabled
-- name: rrc_tx_taps
-  id: variable_rrc_filter_taps
-  parameters:
-    comment: ''
-    gain: Sps
-    samp_rate: samp_rate
-    sym_rate: Rs
-    alpha: beta
-    ntaps: span*Sps
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 808
-    - 220
-    rotation: 0
-    state: enabled
-- name: samp_rate
-  id: variable
-  parameters:
-    comment: ''
-    value: Rs*Sps
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 408
-    - 110
-    rotation: 0
-    state: enabled
-- name: span
-  id: variable
-  parameters:
-    comment: ''
-    value: '11'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 408
-    - 220
-    rotation: 0
-    state: enabled
-- name: tabla_de_verdad_constelacion
-  id: variable
-  parameters:
-    comment: ''
-    value: (-1+0j, 1+0j)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 608
-    - 110
-    rotation: 0
-    state: enabled
-- name: tx_amp
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    label: Amplitud digital Tx (pico < 1)
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0.01'
-    step: '0.01'
-    stop: '1.0'
-    value: '0.5'
-    widget: counter_slider
-    gui_hint: ''
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1250
-    - 8
+    coordinate: [776, 452.0]
     rotation: 0
     state: enabled
 - name: tx_escala
   id: blocks_multiply_const_vxx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
+    const: tx_amp
     maxoutbuf: '0'
     minoutbuf: '0'
-    const: tx_amp
     type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 780
-    - 330
+    coordinate: [1040, 464.0]
     rotation: 0
     state: enabled
-- name: tx_vga
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    label: HackRF TX IF/VGA gain (0-47 dB)
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '47'
-    value: '20'
-    widget: counter_slider
-    gui_hint: ''
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1250
-    - 110
-    rotation: 0
-    state: enabled
+
 connections:
-- - fuente_bits
-  - '0'
-  - cod_diferencial
-  - '0'
-- - cod_diferencial
-  - '0'
-  - mapeo_bpsk
-  - '0'
-- - mapeo_bpsk
-  - '0'
-  - rrc_tx
-  - '0'
-- - rrc_tx
-  - '0'
-  - tx_escala
-  - '0'
-- - tx_escala
-  - '0'
-  - adapta_tasa
-  - '0'
-- - adapta_tasa
-  - '0'
-  - desplaza_lo
-  - '0'
-- - desplaza_lo
-  - '0'
-  - hackrf_sink
-  - '0'
-- - desplaza_lo
-  - '0'
-  - psd_tx_radio
-  - '0'
-- - desplaza_lo
-  - '0'
-  - iq_tx_radio
-  - '0'
+- [adapta_tasa, '0', desplaza_lo, '0']
+- [cod_diferencial, '0', mapeo_bpsk, '0']
+- [desplaza_lo, '0', hackrf_sink, '0']
+- [desplaza_lo, '0', iq_tx_radio, '0']
+- [desplaza_lo, '0', psd_tx_radio, '0']
+- [fuente_bits, '0', cod_diferencial, '0']
+- [mapeo_bpsk, '0', rrc_tx, '0']
+- [rrc_tx, '0', tx_escala, '0']
+- [tx_escala, '0', adapta_tasa, '0']
+
 metadata:
   file_format: 1
   grc_version: 3.10.12.0

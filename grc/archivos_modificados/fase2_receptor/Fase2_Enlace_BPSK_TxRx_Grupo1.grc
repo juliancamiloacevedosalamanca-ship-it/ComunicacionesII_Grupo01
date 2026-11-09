@@ -6,7 +6,8 @@ options:
     cmake_opt: ''
     comment: ''
     copyright: ''
-    description: 'S1 Telemetria industrial: BPSK con RRC, canal AWGN + ruido impulsivo y receptor con filtro acoplado'
+    description: 'S1 Telemetria industrial: BPSK con RRC, canal AWGN + ruido impulsivo
+      y receptor con filtro acoplado'
     gen_cmake: 'On'
     gen_linking: dynamic
     generate_options: qt_gui
@@ -28,16 +29,16 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 8
-    - 8
+    coordinate: [1424, 88.0]
     rotation: 0
     state: enabled
+
 blocks:
 - name: A_imp
   id: variable_qtgui_range
   parameters:
     comment: ''
+    gui_hint: ''
     label: Amplitud del impulso A_imp (A=0, B=0.3, C=0.6, D=1.0)
     min_len: '200'
     orient: QtCore.Qt.Horizontal
@@ -47,14 +48,11 @@ blocks:
     stop: '10'
     value: '0'
     widget: counter_slider
-    gui_hint: ''
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1700
-    - 120
+    coordinate: [1680, 248.0]
     rotation: 0
     state: enabled
 - name: M
@@ -66,9 +64,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 808
-    - 110
+    coordinate: [808, 110]
     rotation: 0
     state: enabled
 - name: Rb
@@ -80,9 +76,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 8
-    - 220
+    coordinate: [8, 220]
     rotation: 0
     state: enabled
 - name: Rs
@@ -94,9 +88,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 8
-    - 110
+    coordinate: [8, 110]
     rotation: 0
     state: enabled
 - name: Sps
@@ -108,31 +100,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 208
-    - 110
-    rotation: 0
-    state: enabled
-- name: ber_ventana
-  id: blocks_moving_average_xx
-  parameters:
-    comment: ''
-    affinity: ''
-    alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    length: '100000'
-    max_iter: '4000'
-    scale: 1.0/100000
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 2060
-    - 830
+    coordinate: [208, 110]
     rotation: 0
     state: enabled
 - name: beta
@@ -144,17 +112,198 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 208
-    - 220
+    coordinate: [208, 220]
+    rotation: 0
+    state: enabled
+- name: bps
+  id: variable
+  parameters:
+    comment: ''
+    value: int(math.log(M,2))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1008, 110]
+    rotation: 0
+    state: enabled
+- name: const_bpsk
+  id: variable_constellation
+  parameters:
+    comment: ''
+    const_points: tabla_de_verdad_constelacion
+    dims: '1'
+    normalization: digital.constellation.AMPLITUDE_NORMALIZATION
+    npwr: '1.0'
+    precision: '8'
+    rot_sym: '2'
+    soft_dec_lut: None
+    sym_map: '[0, 1]'
+    type: calcdist
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1896, 92.0]
+    rotation: 0
+    state: enabled
+- name: noise_amp
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Amplitud AWGN del canal
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '0.01'
+    stop: '0.5'
+    value: '0.10'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1664, 88.0]
+    rotation: 0
+    state: enabled
+- name: offset_muestreo
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Instante de muestreo (offset 0-7 dentro del simbolo)
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: int
+    start: '0'
+    step: '1'
+    stop: '7'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2184, 96.0]
+    rotation: 0
+    state: enabled
+- name: periodo_imp
+  id: variable
+  parameters:
+    comment: ''
+    value: '256'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [608, 220]
+    rotation: 0
+    state: enabled
+- name: retardo_bits
+  id: variable
+  parameters:
+    comment: ''
+    value: '11'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [616, 316.0]
+    rotation: 0
+    state: enabled
+- name: rrc_rx_taps
+  id: variable
+  parameters:
+    comment: ''
+    value: '[t/sum(x*x for x in rrc_tx_taps) for t in rrc_tx_taps]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1208, 110]
+    rotation: 0
+    state: enabled
+- name: rrc_tx_taps
+  id: variable_rrc_filter_taps
+  parameters:
+    alpha: beta
+    comment: ''
+    gain: Sps
+    ntaps: span*Sps
+    samp_rate: samp_rate
+    sym_rate: Rs
+    value: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [808, 220]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: Rs*Sps
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [408, 110]
+    rotation: 0
+    state: enabled
+- name: span
+  id: variable
+  parameters:
+    comment: ''
+    value: '11'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [408, 220]
+    rotation: 0
+    state: enabled
+- name: tabla_de_verdad_constelacion
+  id: variable
+  parameters:
+    comment: ''
+    value: (-1+0j, 1+0j)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [608, 110]
+    rotation: 0
+    state: enabled
+- name: ber_ventana
+  id: blocks_moving_average_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    length: '100000'
+    max_iter: '4000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: 1.0/100000
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2060, 830]
     rotation: 0
     state: enabled
 - name: bits_rx_float
   id: blocks_char_to_float
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     scale: '1'
@@ -163,17 +312,15 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1880
-    - 950
+    coordinate: [1592, 1096.0]
     rotation: 0
     state: enabled
 - name: bits_tx_float
   id: blocks_char_to_float
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     scale: '1'
@@ -182,9 +329,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 850
-    - 930
+    coordinate: [850, 930]
     rotation: 0
     state: enabled
 - name: bits_tx_rx
@@ -281,65 +426,24 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 2280
-    - 950
-    rotation: 0
-    state: enabled
-- name: bps
-  id: variable
-  parameters:
-    comment: ''
-    value: int(math.log(M,2))
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1008
-    - 110
+    coordinate: [2256, 1084.0]
     rotation: 0
     state: enabled
 - name: comparador_xor
   id: blocks_xor_xx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     num_inputs: '2'
     type: byte
-    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1700
-    - 830
-    rotation: 0
-    state: enabled
-- name: const_bpsk
-  id: variable_constellation
-  parameters:
-    comment: ''
-    const_points: tabla_de_verdad_constelacion
-    dims: '1'
-    normalization: digital.constellation.AMPLITUDE_NORMALIZATION
-    npwr: '1.0'
-    precision: '8'
-    rot_sym: '2'
-    soft_dec_lut: None
-    sym_map: '[0, 1]'
-    type: calcdist
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1208
-    - 220
+    coordinate: [1704, 872.0]
     rotation: 0
     state: enabled
 - name: const_recuperada
@@ -431,98 +535,145 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1700
-    - 560
+    coordinate: [1700, 560]
     rotation: 0
     state: enabled
 - name: decision
   id: digital_constellation_decoder_cb
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
+    constellation: const_bpsk
     maxoutbuf: '0'
     minoutbuf: '0'
-    constellation: const_bpsk
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1450
-    - 700
+    coordinate: [1450, 700]
     rotation: 0
     state: enabled
 - name: desplaza_rx
   id: blocks_add_const_vxx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
+    const: '1.5'
     maxoutbuf: '0'
     minoutbuf: '0'
-    const: '1.5'
     type: float
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 2060
-    - 950
+    coordinate: [1920, 1120.0]
     rotation: 0
     state: enabled
 - name: diagrama_ojo
   id: qtgui_eye_sink_x
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    name: '"Diagrama de ojo a la salida del filtro acoplado"'
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: blue
+    color2: blue
+    color3: blue
+    color4: blue
+    color5: blue
+    color6: blue
+    color7: blue
+    color8: blue
+    color9: blue
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'True'
     gui_hint: 'tabs@1: 0,0,1,1'
+    label1: I
+    label10: Signal 10
+    label2: Q
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    nconnections: '1'
     samp_per_symbol: Sps
     size: '1024'
     srate: samp_rate
-    type: complex
-    nconnections: '1'
-    ymin: '-1.6'
-    ymax: '1.6'
-    autoscale: 'False'
-    update_time: '0.10'
-    grid: 'True'
-    entags: 'True'
-    legend: 'True'
-    axislabels: 'True'
-    label1: I
-    label2: Q
-    ylabel: Amplitud
-    yunit: '""'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
     tr_mode: qtgui.TRIG_MODE_FREE
     tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_level: '0.0'
-    tr_delay: '0'
-    tr_chan: '0'
     tr_tag: '""'
-    ctrlpanel: 'False'
+    type: complex
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitud
+    ymax: '1.6'
+    ymin: '-1.6'
+    yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1700
-    - 440
+    coordinate: [1736, 428.0]
     rotation: 0
     state: enabled
 - name: errores_float
   id: blocks_char_to_float
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     scale: '1'
@@ -531,53 +682,48 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1880
-    - 830
+    coordinate: [1872, 856.0]
     rotation: 0
     state: enabled
 - name: fuente_bits
   id: digital_glfsr_source_x
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: byte
+    comment: ''
     degree: '15'
     mask: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
     repeat: 'True'
     seed: '1'
+    type: byte
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 8
-    - 420
+    coordinate: [8, 420]
     rotation: 0
     state: enabled
 - name: import_0
   id: import
   parameters:
+    alias: ''
     comment: ''
     imports: import math
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1058
-    - 220
+    coordinate: [1058, 220]
     rotation: 0
     state: enabled
 - name: impulsos
   id: blocks_vector_source_x
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     repeat: 'True'
@@ -589,9 +735,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 850
-    - 650
+    coordinate: [850, 650]
     rotation: 0
     state: enabled
 - name: iq_sobremuestreado
@@ -683,21 +827,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1250
-    - 760
+    coordinate: [1250, 760]
     rotation: 0
     state: enabled
 - name: mapeo_bpsk
   id: digital_chunks_to_symbols_xx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
+    comment: ''
     dimension: '1'
     in_type: byte
+    maxoutbuf: '0'
+    minoutbuf: '0'
     num_ports: '1'
     out_type: complex
     symbol_table: tabla_de_verdad_constelacion
@@ -705,122 +847,89 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 368
-    - 420
+    coordinate: [368, 420]
     rotation: 0
     state: enabled
 - name: medidor_ber
   id: qtgui_number_sink
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    name: '"BER (ventana de 100 000 bits)"'
-    gui_hint: 'tabs@2: 0,0,1,1'
-    type: float
-    nconnections: '1'
-    graph_type: qtgui.NUM_GRAPH_HORIZ
-    min: '0'
-    max: '0.5'
-    avg: '0'
     autoscale: 'False'
-    update_time: '0.2'
-    unit1: ''
-    factor1: '1'
-    label1: '""'
+    avg: '0'
     color1: ("black", "black")
-    decimal: '6'
+    color10: ("black", "black")
+    color2: ("black", "black")
+    color3: ("black", "black")
+    color4: ("black", "black")
+    color5: ("black", "black")
+    color6: ("black", "black")
+    color7: ("black", "black")
+    color8: ("black", "black")
+    color9: ("black", "black")
+    comment: ''
+    factor1: '1'
+    factor10: '1'
+    factor2: '1'
+    factor3: '1'
+    factor4: '1'
+    factor5: '1'
+    factor6: '1'
+    factor7: '1'
+    factor8: '1'
+    factor9: '1'
+    graph_type: qtgui.NUM_GRAPH_HORIZ
+    gui_hint: 'tabs@2: 0,0,1,1'
+    label1: '""'
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    max: '0.5'
+    min: '0'
+    name: '"BER (ventana de 100 000 bits)"'
+    nconnections: '1'
+    type: float
+    unit1: ''
+    unit10: ''
+    unit2: ''
+    unit3: ''
+    unit4: ''
+    unit5: ''
+    unit6: ''
+    unit7: ''
+    unit8: ''
+    unit9: ''
+    update_time: '0.2'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 2280
-    - 830
+    coordinate: [2280, 830]
     rotation: 0
     state: enabled
 - name: muestreo_simbolo
   id: blocks_keep_m_in_n
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
+    m: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    m: '1'
     n: Sps
     offset: offset_muestreo
     type: complex
-    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1450
-    - 580
-    rotation: 0
-    state: enabled
-- name: noise_amp
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    label: Amplitud AWGN del canal
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '0.01'
-    stop: '0.5'
-    value: '0.10'
-    widget: counter_slider
-    gui_hint: ''
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1700
-    - 8
-    rotation: 0
-    state: enabled
-- name: offset_muestreo
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    label: Instante de muestreo (offset 0-7 dentro del simbolo)
-    min_len: '200'
-    orient: QtCore.Qt.Horizontal
-    rangeType: int
-    start: '0'
-    step: '1'
-    stop: '7'
-    value: '0'
-    widget: counter_slider
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1700
-    - 232
-    rotation: 0
-    state: enabled
-- name: periodo_imp
-  id: variable
-  parameters:
-    comment: ''
-    value: '256'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 608
-    - 220
+    coordinate: [1450, 580]
     rotation: 0
     state: enabled
 - name: psd_tx_canal
@@ -901,130 +1010,76 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1250
-    - 250
-    rotation: 0
-    state: enabled
-- name: retardo_bits
-  id: variable
-  parameters:
-    comment: ''
-    value: '11'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1950
-    - 232
+    coordinate: [1250, 250]
     rotation: 0
     state: enabled
 - name: retardo_ref
   id: blocks_delay
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
+    delay: retardo_bits
     maxoutbuf: '0'
     minoutbuf: '0'
-    delay: retardo_bits
     num_ports: '1'
+    showports: 'False'
     type: byte
     vlen: '1'
-    showports: 'False'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 600
-    - 830
+    coordinate: [600, 830]
     rotation: 0
     state: enabled
 - name: rrc_rx_acoplado
   id: fir_filter_xxx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
+    decim: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    decim: '1'
+    samp_delay: '0'
     taps: rrc_rx_taps
     type: ccf
-    samp_delay: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1450
-    - 460
-    rotation: 0
-    state: enabled
-- name: rrc_rx_taps
-  id: variable
-  parameters:
-    comment: ''
-    value: '[t/sum(x*x for x in rrc_tx_taps) for t in rrc_tx_taps]'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 1208
-    - 110
+    coordinate: [1450, 460]
     rotation: 0
     state: enabled
 - name: rrc_tx
   id: interp_fir_filter_xxx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
+    interp: Sps
     maxoutbuf: '0'
     minoutbuf: '0'
-    interp: Sps
+    samp_delay: '0'
     taps: rrc_tx_taps
     type: ccf
-    samp_delay: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 608
-    - 420
-    rotation: 0
-    state: enabled
-- name: rrc_tx_taps
-  id: variable_rrc_filter_taps
-  parameters:
-    comment: ''
-    gain: Sps
-    samp_rate: samp_rate
-    sym_rate: Rs
-    alpha: beta
-    ntaps: span*Sps
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 808
-    - 220
+    coordinate: [608, 420]
     rotation: 0
     state: enabled
 - name: ruido_awgn
   id: analog_noise_source_x
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    amp: noise_amp
+    comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    amp: noise_amp
     noise_type: analog.GR_GAUSSIAN
     seed: '0'
     type: complex
@@ -1032,45 +1087,15 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 850
-    - 540
-    rotation: 0
-    state: enabled
-- name: samp_rate
-  id: variable
-  parameters:
-    comment: ''
-    value: Rs*Sps
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 408
-    - 110
-    rotation: 0
-    state: enabled
-- name: span
-  id: variable
-  parameters:
-    comment: ''
-    value: '11'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 408
-    - 220
+    coordinate: [850, 540]
     rotation: 0
     state: enabled
 - name: suma_awgn
   id: blocks_add_xx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     num_inputs: '2'
@@ -1080,17 +1105,15 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1080
-    - 440
+    coordinate: [1080, 440]
     rotation: 0
     state: enabled
 - name: suma_impulsos
   id: blocks_add_xx
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
+    comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     num_inputs: '2'
@@ -1100,58 +1123,54 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1250
-    - 460
-    rotation: 0
-    state: enabled
-- name: tabla_de_verdad_constelacion
-  id: variable
-  parameters:
-    comment: ''
-    value: (-1+0j, 1+0j)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate:
-    - 608
-    - 110
+    coordinate: [1250, 460]
     rotation: 0
     state: enabled
 - name: tabs
   id: qtgui_tab_widget
   parameters:
-    comment: ''
-    affinity: ''
     alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_tabs: '3'
+    comment: ''
+    gui_hint: ''
     label0: Transmisor y canal
     label1: Receptor
+    label10: Tab 10
+    label11: Tab 11
+    label12: Tab 12
+    label13: Tab 13
+    label14: Tab 14
+    label15: Tab 15
+    label16: Tab 16
+    label17: Tab 17
+    label18: Tab 18
+    label19: Tab 19
     label2: Validacion bits Tx vs Rx
-    gui_hint: ''
+    label3: Tab 3
+    label4: Tab 4
+    label5: Tab 5
+    label6: Tab 6
+    label7: Tab 7
+    label8: Tab 8
+    label9: Tab 9
+    num_tabs: '3'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 8
-    - 1100
+    coordinate: [2192, 280.0]
     rotation: 0
     state: enabled
 - name: throttle_0
   id: blocks_throttle2
   parameters:
-    comment: ''
     affinity: ''
     alias: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
+    comment: ''
     ignoretag: 'True'
     limit: auto
     maximum: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
     samples_per_second: samp_rate
     type: complex
     vlen: '1'
@@ -1159,9 +1178,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 850
-    - 420
+    coordinate: [850, 420]
     rotation: 0
     state: enabled
 - name: tiempo_canal
@@ -1258,9 +1275,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1250
-    - 560
+    coordinate: [1250, 560]
     rotation: 0
     state: enabled
 - name: tiempo_mf
@@ -1357,124 +1372,40 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate:
-    - 1700
-    - 680
+    coordinate: [1700, 680]
     rotation: 0
     state: enabled
+
 connections:
-- - fuente_bits
-  - '0'
-  - mapeo_bpsk
-  - '0'
-- - mapeo_bpsk
-  - '0'
-  - rrc_tx
-  - '0'
-- - rrc_tx
-  - '0'
-  - throttle_0
-  - '0'
-- - throttle_0
-  - '0'
-  - suma_awgn
-  - '0'
-- - ruido_awgn
-  - '0'
-  - suma_awgn
-  - '1'
-- - suma_awgn
-  - '0'
-  - suma_impulsos
-  - '0'
-- - impulsos
-  - '0'
-  - suma_impulsos
-  - '1'
-- - suma_impulsos
-  - '0'
-  - rrc_rx_acoplado
-  - '0'
-- - rrc_rx_acoplado
-  - '0'
-  - muestreo_simbolo
-  - '0'
-- - muestreo_simbolo
-  - '0'
-  - decision
-  - '0'
-- - fuente_bits
-  - '0'
-  - retardo_ref
-  - '0'
-- - retardo_ref
-  - '0'
-  - comparador_xor
-  - '0'
-- - decision
-  - '0'
-  - comparador_xor
-  - '1'
-- - comparador_xor
-  - '0'
-  - errores_float
-  - '0'
-- - errores_float
-  - '0'
-  - ber_ventana
-  - '0'
-- - ber_ventana
-  - '0'
-  - medidor_ber
-  - '0'
-- - retardo_ref
-  - '0'
-  - bits_tx_float
-  - '0'
-- - decision
-  - '0'
-  - bits_rx_float
-  - '0'
-- - bits_rx_float
-  - '0'
-  - desplaza_rx
-  - '0'
-- - bits_tx_float
-  - '0'
-  - bits_tx_rx
-  - '0'
-- - desplaza_rx
-  - '0'
-  - bits_tx_rx
-  - '1'
-- - rrc_tx
-  - '0'
-  - psd_tx_canal
-  - '0'
-- - suma_impulsos
-  - '0'
-  - psd_tx_canal
-  - '1'
-- - suma_impulsos
-  - '0'
-  - tiempo_canal
-  - '0'
-- - suma_impulsos
-  - '0'
-  - iq_sobremuestreado
-  - '0'
-- - rrc_rx_acoplado
-  - '0'
-  - diagrama_ojo
-  - '0'
-- - muestreo_simbolo
-  - '0'
-  - const_recuperada
-  - '0'
-- - rrc_rx_acoplado
-  - '0'
-  - tiempo_mf
-  - '0'
+- [ber_ventana, '0', medidor_ber, '0']
+- [bits_rx_float, '0', desplaza_rx, '0']
+- [bits_tx_float, '0', bits_tx_rx, '0']
+- [comparador_xor, '0', errores_float, '0']
+- [decision, '0', bits_rx_float, '0']
+- [decision, '0', comparador_xor, '1']
+- [desplaza_rx, '0', bits_tx_rx, '1']
+- [errores_float, '0', ber_ventana, '0']
+- [fuente_bits, '0', mapeo_bpsk, '0']
+- [fuente_bits, '0', retardo_ref, '0']
+- [impulsos, '0', suma_impulsos, '1']
+- [mapeo_bpsk, '0', rrc_tx, '0']
+- [muestreo_simbolo, '0', const_recuperada, '0']
+- [muestreo_simbolo, '0', decision, '0']
+- [retardo_ref, '0', bits_tx_float, '0']
+- [retardo_ref, '0', comparador_xor, '0']
+- [rrc_rx_acoplado, '0', diagrama_ojo, '0']
+- [rrc_rx_acoplado, '0', muestreo_simbolo, '0']
+- [rrc_rx_acoplado, '0', tiempo_mf, '0']
+- [rrc_tx, '0', psd_tx_canal, '0']
+- [rrc_tx, '0', throttle_0, '0']
+- [ruido_awgn, '0', suma_awgn, '1']
+- [suma_awgn, '0', suma_impulsos, '0']
+- [suma_impulsos, '0', iq_sobremuestreado, '0']
+- [suma_impulsos, '0', psd_tx_canal, '1']
+- [suma_impulsos, '0', rrc_rx_acoplado, '0']
+- [suma_impulsos, '0', tiempo_canal, '0']
+- [throttle_0, '0', suma_awgn, '0']
+
 metadata:
   file_format: 1
   grc_version: 3.10.12.0
