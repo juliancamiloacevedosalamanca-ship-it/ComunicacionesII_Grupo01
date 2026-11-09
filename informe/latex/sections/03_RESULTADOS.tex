@@ -1,6 +1,39 @@
 \section{Resultados y discusión}
 \label{sec:resultados}
 
+Los resultados se presentan en el orden de las fases del proyecto: caracterización del canal (Fase~1), diseño y validación del sistema Tx--canal--Rx (Fase~2), configuración de la interfaz SDR (Fase~3) y medición de curvas BER (Fase~4). Todas las figuras de GNU Radio son capturas de los flujogramas del grupo en ejecución; las capturas completas de cada prueba están en el Anexo~\ref{app:capturas}.
+
+\subsection{Fase 1: caracterización del canal con ruido impulsivo}
+En la primera fase se partió del flujograma base del curso y se modificó para el escenario S1 (Anexo~\ref{app:fase1}): la tabla de símbolos pasó de OOK a BPSK $(-1,+1)$ y se agregó un tren de impulsos reales de amplitud $A_{imp}$, uno cada 256 muestras (1~ms), sumado a la salida del AWGN. En esta fase el pulso era rectangular de 8 muestras y no había receptor; se observaron la señal temporal, la constelación de las muestras y la PSD para la referencia y para las tres severidades de la Tabla~\ref{tab:fase1}, con $R_s$, SPS y $f_s$ fijos.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.82\textwidth]{Figuras/fase1_pruebaD.png}
+    \caption{Fase~1, prueba D ($A_{imp}=1$, AWGN 0.10, pulso rectangular): envolvente compleja, constelación de las muestras y PSD a la salida del canal.}
+    \label{fig:fase1}
+\end{figure*}
+
+\begin{table}[H]
+    \centering
+    \caption{Pruebas de la Fase 1 (pulso rectangular, sin receptor)}
+    \label{tab:fase1}
+    \footnotesize
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular}{@{}lcp{2.0cm}p{2.3cm}@{}}
+        \toprule
+        \textbf{Prueba} & $\mathbf{A_{imp}}$ & \textbf{Tiempo} & \textbf{Constelación} \\
+        \midrule
+        A (referencia) & 0.0 & niveles $\pm1$, sin picos & dos nubes en $\pm1$ \\
+        B (suave) & 0.3 & picos de $\approx1.3$ cada 1 ms & puntos sueltos en $-0.7$ y $1.3$ \\
+        C (media) & 0.6 & picos de $\approx1.6$ & puntos sueltos en $-0.4$ y $1.6$ \\
+        D (fuerte) & 1.0 & picos de $\approx2$ & puntos sueltos en 0 y 2 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+La Fig.~\ref{fig:fase1} resume la prueba más severa. En el tiempo aparecen 8 picos en 8~ms, uno por milisegundo y solo en la componente I, porque el impulso es real. En la constelación, el AWGN abre cada símbolo en una nube, mientras que los impulsos producen unos pocos puntos aislados desplazados exactamente $+A_{imp}$ (una muestra de cada 256). La PSD conserva la forma $\mathrm{sinc}^2$ del pulso rectangular, con nulos en múltiplos de 32~kHz y unos 64~kHz entre primeros nulos, y casi no cambia entre pruebas: la potencia media del tren ($A_{imp}^2/256\le0.004$) es menor que la del AWGN (0.01). El hallazgo clave de esta fase es que, sin filtro acoplado, con $A_{imp}=1$ los puntos que venían del símbolo $-1$ caen en 0, justo en el umbral de decisión. Esto motivó dos decisiones de la Fase~2: conformar con RRC para reducir el ancho de banda y usar un filtro acoplado que reparta la energía del impulso antes de decidir.
+
+\subsection{Fase 2: diseño y validación del sistema Tx--canal--Rx}
 La Fig.~\ref{fig:flujograma} muestra el flujograma del enlace completo de la Fase~2. Las figuras de las secciones de espectro y receptor son capturas de ese flujograma en ejecución, con AWGN de amplitud 0.10 y la BER medida sobre una ventana de $10^5$ bits. Para los márgenes de decisión y como verificación de las curvas BER se usó además una simulación numérica que reproduce el flujograma bloque a bloque: los mismos 89 coeficientes RRC en Tx y Rx, el mismo retardo de 11 bits, la misma regla de decisión y la misma ley de inyección de ruido de la ecuación~\eqref{eq:pn}. Ambas coinciden: el flujograma midió BER $=0$ en las pruebas A a E y 0.2498 con 4 muestras de desfase, y la simulación dio 0 y 0.25.
 
 Antes de las pruebas con perturbación, el receptor se validó en condición ideal, sin ruido ni impulsos (prueba 0, Anexo~\ref{app:capturas}). En ese caso la PSD del canal coincide con la del transmisor, la constelación recuperada se reduce a dos puntos exactos en $\pm1$ y la BER es cero: el filtro acoplado, el muestreo con desfase 0 y la referencia retrasada 11 bits funcionan sin errores antes de agregar el canal del proyecto.
@@ -12,7 +45,7 @@ Antes de las pruebas con perturbación, el receptor se validó en condición ide
     \label{fig:flujograma}
 \end{figure*}
 
-\subsection{Espectro y señal en el canal}
+\subsubsection{Espectro y señal en el canal}
 En la Fig.~\ref{fig:psd}, la señal a la salida del RRC del transmisor ocupa $\pm21.6$~kHz, como predice la ecuación~\eqref{eq:bw}, y fuera de esa banda sus lóbulos laterales caen más de 30~dB. Al agregar el canal, el AWGN fija un piso plano unos 30~dB por debajo de la banda de la señal. Con $A_{imp}=1$ el espectro casi no cambia respecto a la referencia: la potencia media del tren de impulsos es $1/256\approx0.004$, menos de la mitad de la del AWGN, y el piso sube apenas 1.5~dB (las capturas completas de todas las pruebas están en el Anexo~\ref{app:capturas}). Con $A_{imp}=5$ la potencia del tren es $25/256\approx0.098$, el piso sube unos 10~dB y aparece un peine de líneas separadas 1~kHz, que es la frecuencia de repetición de los impulsos (un impulso cada 256 muestras a 256~kS/s). La PSD, por ser un promedio, informa poco sobre el riesgo real: un evento de amplitud 5 en una sola muestra apenas se nota en ella.
 
 \begin{figure*}[t]
@@ -32,7 +65,7 @@ En el dominio del tiempo (Fig.~\ref{fig:tiempo}), en cambio, el impulso sí es v
     \label{fig:tiempo}
 \end{figure}
 
-\subsection{Receptor: ojo, constelación y bits}
+\subsubsection{Receptor: ojo, constelación y bits}
 La Fig.~\ref{fig:ojos} muestra el ojo a la salida del filtro acoplado. Con $A_{imp}=0$ las trayectorias convergen en $\pm1$ en los instantes de muestreo: la cascada RRC--RRC se comporta como un coseno alzado y no deja interferencia intersimbólica. Con $A_{imp}=0.6$ y $1.0$ el ojo es prácticamente el mismo. Solo con $A_{imp}=5$ aparecen trayectorias aisladas que se salen del haz, y aun así el ojo sigue abierto en el centro.
 
 \begin{figure}[H]
@@ -82,7 +115,39 @@ La Tabla~\ref{tab:fase2} resume la validación. En todas las pruebas los bits re
 
 El instante de muestreo resultó tan determinante como el canal. Con el desfase correcto (0 muestras) el margen es 0.88; con 2 muestras de error baja a 0.18, y con 4 muestras ---el cruce del ojo--- la BER sube a 0.25 sin que el canal haya cambiado. Este resultado justifica calcular el retardo total del enlace (88 muestras, 11 símbolos) antes de fijar el muestreo y, en hardware, recuperar el reloj de forma adaptativa.
 
-\subsection{Curvas BER}
+\subsection{Fase 3: configuración de la interfaz SDR}
+En la tercera fase el enlace se llevó a flujogramas para HackRF One y USRP (Fig.~\ref{fig:fase3flujos}). El transmisor conserva la fuente PRBS-15, la codificación diferencial, el mapeo BPSK y el RRC de la Fase~2; después del RRC se agregan un factor de amplitud digital (para mantener el pico por debajo de 1 y no saturar el conversor), la adaptación de tasa a la del radio, el desplazamiento del oscilador y el bloque del radio. El receptor invierte el camino: corrige el desplazamiento del oscilador, vuelve a 256~kS/s y suma de forma digital el mismo tren de impulsos del proyecto, para reproducir el escenario sobre la señal real. Como los dos radios tienen osciladores independientes, agrega control automático de ganancia, lazo de frecuencia de borde de banda (corrige el offset entre osciladores), sincronización de reloj con banco polifásico de filtros RRC (que cumple además la función del filtro acoplado y elige el instante de muestreo de forma adaptativa) y lazo de Costas de orden 2, antes de la misma decisión y decodificación diferencial. Un filtro RRC adicional alimenta solo el diagrama de ojo de diagnóstico. Se eliminó el bloque de regulación de ritmo y el modelo de canal: con hardware, el radio fija el ritmo de muestras y el canal es el medio físico.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.92\textwidth]{Figuras/fase3_tx.pdf}\\[2mm]
+    \includegraphics[width=\textwidth]{Figuras/fase3_rx.pdf}
+    \caption{Flujogramas de la Fase~3 para HackRF One, con los parámetros principales de cada bloque tomados de los archivos \texttt{.grc}. Arriba, transmisor: PRBS, codificación diferencial, BPSK, RRC, amplitud, remuestreo a 2~MS/s, desplazamiento del oscilador y \textit{osmocom Sink}. Abajo, receptor: \textit{osmocom Source}, corrección del oscilador, regreso a 256~kS/s, suma de impulsos, AGC, FLL, sincronización de reloj polifásica, Costas, decisión y decodificación diferencial. Las versiones para USRP solo cambian el bloque del radio (UHD) y la tasa (1~MS/s).}
+    \label{fig:fase3flujos}
+\end{figure*}
+
+
+La Fig.~\ref{fig:bloques} muestra la configuración de los bloques de radio y la Tabla~\ref{tab:sdr} (Anexo~\ref{app:sdr}) justifica cada parámetro. La separación entre diseño y hardware es la idea central de esta fase. Modulación, $R_s$, $R_b$, SPS, $\beta$, span, mapeo y decisión pertenecen al diseño de comunicaciones y no cambiaron. Frecuencia central (960~MHz), tasa del radio (2~MS/s en HackRF, 1~MS/s en USRP), remuestreo racional ($\times125/16$ y $\times125/32$), ganancias, ancho de banda RF, puerto, reloj y desplazamiento de 200~kHz del oscilador pertenecen a la interfaz. Así, cualquier diferencia entre la simulación y la medición en hardware se puede atribuir a la interfaz y al medio físico, y no a un cambio del diseño.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=\textwidth]{Figuras/bloques_radio.png}
+    \caption{Configuración de los bloques de radio: Osmocom Sink (transmisor HackRF), Osmocom Source (receptor HackRF) y UHD: USRP Sink (transmisor USRP).}
+    \label{fig:bloques}
+\end{figure*}
+
+En el Osmocom Sink la frecuencia es \texttt{fc - lo\_off}, la tasa \texttt{radio\_rate}, la ganancia de RF (amplificador) 0 y la ganancia IF \texttt{tx\_vga}; el campo BB no tiene efecto en transmisión con HackRF. En el Osmocom Source la frecuencia es \texttt{fc + lo\_off}, la ganancia IF corresponde al LNA (\texttt{rx\_lna}) y la BB al VGA (\texttt{rx\_vga}), con el control automático de ganancia del radio desactivado para que el nivel sea repetible. En ambos, el ancho de banda 0 deja que el driver elija el filtro analógico. En el USRP Sink la dirección vacía toma el primer equipo encontrado, el reloj es interno y la frecuencia, la ganancia y la antena (TX/RX) se fijan en la pestaña de opciones de RF.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.9\textwidth]{Figuras/enlace_fisico.png}
+    \caption{Montaje del enlace físico de prueba: por cable con atenuador (opción 1) o por aire con antenas (opción 2).}
+    \label{fig:enlace}
+\end{figure*}
+
+La Fig.~\ref{fig:enlace} muestra el montaje previsto. La primera prueba se hace por cable con al menos 30~dB de atenuación, porque la potencia del transmisor puede superar el máximo de entrada del receptor (unos $-5$~dBm en HackRF). La tasa de bits no depende del radio: $256\,000\times125/16=2\times10^6$ muestras/s, y la señal de 43~kHz queda muy por debajo del ancho de banda del radio. Para medir la BER en hardware, \texttt{delay\_bits} se calibra primero con el bloque del Anexo~\ref{app:retardo}, porque el retardo deja de ser 11 bits: depende de los remuestreadores, de la sincronización y del instante en que arrancan el transmisor y el receptor. Los errores encontrados durante la configuración y su solución están en la Tabla~\ref{tab:errores}.
+
+\subsection{Fase 4: validación con curvas BER}
 Las curvas de la Fig.~\ref{fig:ber} se midieron en los flujogramas de la Fase~4 con el instrumento del curso, con los parámetros de la Tabla~\ref{tab:instr}: \texttt{e\_EbN0\_Sweep} se ubicó a la salida del canal, justo antes del filtro acoplado, y \texttt{e\_BER\_Curve} recibe los bits de la fuente PRBS (entrada 0) y los bits a la salida del decodificador diferencial (entrada 1) (Anexo~\ref{app:fase4}).
 
 \begin{table}[H]
@@ -135,27 +200,5 @@ Con $A_{imp}=5$ la curva se separa: requiere 9.17~dB para BER $=10^{-3}$ (1.8~dB
     \end{tabular}
 \end{table}
 
-\subsection{Prueba con hardware en el laboratorio}
-El 5 de noviembre se ejecutó en el laboratorio la práctica de enlace del curso con dos HackRF One: 16-QAM con mapeo Gray, $R_s=8$~ksym/s ($R_b=32$~kb/s, la misma tasa de bits del proyecto), SPS~$=8$, RRC con roll-off de 0.5, tramas conocidas con CRC-32, $f_c=960$~MHz, radio a 2~MS/s con remuestreo $\times125/4$, LO desplazado 200~kHz, ganancia IF de Tx de 20~dB y amplitud digital de 0.15, sin AWGN digital. El receptor usa AGC, lazo de frecuencia de borde de banda, sincronización de reloj polifásica, recuperación de portadora por constelación y correlación de la trama con las cuatro rotaciones de fase. Los flujogramas, las capturas y el registro de consola se adjuntan como evidencia. En el Anexo~\ref{app:lab} se muestra el espectro del transmisor, de unos $(1+0.5)\times8=12$~kHz de ancho. Esta prueba sirvió para validar la cadena física que usan los flujogramas del proyecto: conversión de tasa, radio, control de ganancia, lazo de frecuencia, recuperación de reloj y de portadora, y resolución de la ambigüedad de fase.
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{Figuras/lab_rx_16qam.jpg}
-    \caption{Receptor HackRF en el laboratorio: espectro alrededor de 960~MHz y constelación 16-QAM recuperada tras la sincronización de portadora y reloj.}
-    \label{fig:lab_rx}
-\end{figure}
-
-En la Fig.~\ref{fig:lab_rx} la señal aparece en 960~MHz unos 30~dB por encima del piso de ruido, junto a una espiga en 960.2~MHz que se mantiene aun sin transmisión. Esa espiga es la componente de continua del receptor, cuyo oscilador está sintonizado en $f_c+200$~kHz; la misma estrategia de desplazar el oscilador ($\pm200$~kHz) se usó en los flujogramas del proyecto para que la componente de continua no caiga sobre la señal. La constelación recuperada muestra los 16 puntos separados, con una leve rotación residual dentro de cada nube. Cuando el transmisor se detuvo, el espectro quedó plano y la constelación se convirtió en una nube de ruido, lo que confirma que los puntos provenían del enlace y no de un artefacto del receptor.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{Figuras/lab_metricas.png}
-    \caption{Evolución de la BER y la EVM acumuladas reportadas por el receptor a lo largo de 2601 tramas.}
-    \label{fig:lab_metricas}
-\end{figure}
-
-El receptor reporta la BER y la EVM acumuladas desde el arranque (Fig.~\ref{fig:lab_metricas}). Al final se registraron 2601 tramas, 89.2\,\% de ellas con CRC correcto, una BER acumulada de 0.42\,\% y una EVM de 8.5\,\%. Esos valores mezclan la etapa de adquisición con la de régimen. Al restar los acumulados entre dos lecturas se obtiene el desempeño del tramo final (tramas 1951 a 2601): BER $\approx8\times10^{-4}$, EVM $\approx5.3$\,\% (MER $\approx25$~dB) y 95\,\% de tramas válidas. En las últimas 50 tramas, 49 pasaron el CRC. Con 25~dB de MER, la BER teórica de 16-QAM es despreciable, de modo que los errores restantes no se deben al ruido térmico sino a eventos de sincronización. El registro lo muestra: la rotación de fase detectada salta entre 0°, 90°, 180° y 270° durante la sesión, y en varios de esos saltos (por ejemplo, en las tramas 101 y 2151) la trama reportada falla el CRC. Esto respalda la decisión de usar codificación diferencial en el enlace BPSK del proyecto y de calibrar \texttt{delay\_bits} antes de medir.
-
-\subsection{Preparación del enlace del proyecto en hardware}
-
-Los flujogramas de HackRF One y USRP conservan el transmisor y la decisión del enlace simulado, y cambian solo la interfaz con el radio (Anexo~\ref{app:sdr}). La curva simulada sin impulsos es la referencia contra la que se compara la curva experimental, con el criterio del curso de una penalización máxima de 2~dB en BER $=10^{-3}$. Antes de medir, \texttt{delay\_bits} se calibra con el bloque del Anexo~\ref{app:retardo}, porque en hardware el retardo deja de ser 11 bits: depende de los remuestreadores, de la sincronización y del instante en que arrancan el transmisor y el receptor.
+La curva medida sin impulsos es la referencia contra la que se compara la curva experimental con el radio, con el criterio del curso de una penalización máxima de 2~dB en BER $=10^{-3}$.

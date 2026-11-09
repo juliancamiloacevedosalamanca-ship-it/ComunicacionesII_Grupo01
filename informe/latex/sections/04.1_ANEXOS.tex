@@ -41,7 +41,7 @@ class blk(gr.sync_block):
 
 \subsection{Interfaz SDR: parámetros, enlace físico y errores}
 \label{app:sdr}
-La Tabla~\ref{tab:sdr} explica cada parámetro de los bloques de radio usados en los flujogramas de la Fase~3 y la Fig.~\ref{fig:enlace} muestra el montaje físico de prueba.
+La Tabla~\ref{tab:sdr} explica cada parámetro de los bloques de radio usados en los flujogramas de la Fase~3.
 
 \begin{table*}[t]
     \centering
@@ -55,7 +55,7 @@ La Tabla~\ref{tab:sdr} explica cada parámetro de los bloques de radio usados en
         Selección del equipo & \texttt{hackrf=0} & dirección vacía, \texttt{serial=} o \texttt{addr=} & Con un solo radio basta el índice; con varios se usa el número de serie (HackRF, B2xx) o la IP (N2xx) para no confundir Tx y Rx. \\
         Tasa del radio & 2 MS/s & 1 MS/s & HackRF admite de 2 a 20 MS/s; 1 MS/s es válida en B2xx y N2xx (100 MHz/100). Ninguna coincide con 256 kS/s, por eso se remuestrea. \\
         Remuestreo Tx / Rx & $\times125/16$ / $\times16/125$ & $\times125/32$ / $\times32/125$ & $256\,000\times125/16=2\times10^6$. $R_s$ no se cambia: la adaptación pertenece a la interfaz, no al diseño. \\
-        Frecuencia central & $960$ MHz $\mp 200$ kHz & igual & Frecuencia asignada en la práctica del laboratorio. El oscilador se desplaza 200 kHz y la señal se corrige digitalmente para apartarla de la componente de continua. \\
+        Frecuencia central & $960$ MHz $\mp 200$ kHz & igual & Frecuencia asignada en el laboratorio del curso. El oscilador se desplaza 200 kHz y la señal se corrige digitalmente para apartarla de la componente de continua. \\
         Corrección de frecuencia & 0 ppm & -- & El offset entre osciladores (unos kHz a 960 MHz) lo corrige el lazo de frecuencia del receptor; la corrección fija solo sirve si se conoce el error del cristal. \\
         Ganancias Tx & IF 20 dB, amp. RF apagado & 20 dB & Se empieza bajo, sobre todo por cable. La amplitud digital se mantiene con pico menor que 1 para no saturar el conversor. \\
         Ganancias Rx & LNA 16 dB, VGA 20 dB, amp. RF apagado & 30 dB & Se suben de a poco hasta ver la señal sin saturación (constelación en anillo o espectro con techo indican exceso). \\
@@ -67,21 +67,6 @@ La Tabla~\ref{tab:sdr} explica cada parámetro de los bloques de radio usados en
         \bottomrule
     \end{tabular}
 \end{table*}
-
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=0.9\textwidth]{Figuras/enlace_fisico.png}
-    \caption{Montaje del enlace físico de prueba: por cable con atenuador (opción 1) y por aire con antenas, como en la práctica del 5 de noviembre (opción 2).}
-    \label{fig:enlace}
-\end{figure*}
-
-\begin{figure*}[t]
-    \centering
-    \includegraphics[width=\textwidth]{Figuras/bloques_radio.png}
-    \caption{Configuración de los bloques de radio en los flujogramas de la Fase~3: Osmocom Sink (transmisor HackRF), Osmocom Source (receptor HackRF) y UHD: USRP Sink (transmisor USRP).}
-    \label{fig:bloques}
-\end{figure*}
-La Fig.~\ref{fig:bloques} muestra los bloques configurados. En el Osmocom Sink la frecuencia es \texttt{fc - lo\_off}, la tasa \texttt{radio\_rate}, la ganancia de RF (amplificador) 0 y la ganancia IF \texttt{tx\_vga}; el campo de ganancia BB no tiene efecto en transmisión con HackRF. En el Osmocom Source la frecuencia es \texttt{fc + lo\_off}, la ganancia IF corresponde al LNA (\texttt{rx\_lna}) y la BB al VGA (\texttt{rx\_vga}), con el control automático de ganancia del radio desactivado para que el nivel sea repetible. En ambos el ancho de banda 0 deja que el driver elija el filtro y la antena vacía usa el único puerto del equipo. En el USRP Sink la dirección vacía toma el primer equipo encontrado, el reloj es interno y la tasa es \texttt{radio\_rate}; la frecuencia, la ganancia y la antena (TX/RX) se fijan en la pestaña de opciones de RF.
 
 
 
@@ -103,8 +88,6 @@ La Tabla~\ref{tab:errores} recoge los errores y advertencias reales que aparecie
         \texttt{buffer\_double\_mapped: allocate\_buffer} & Vectores de 15 valores (60 bytes) no alineados a potencias de dos. & Advertencia sin efecto en los resultados. \\
         Ventana gráfica congelada en el portátil & Ocho gráficas en tiempo real e interacción manual simultánea. & Flujograma automatizado que cambia los parámetros y guarda las capturas sin intervención. \\
         BER de 0.25 con el enlace limpio & Muestreo en el cruce del ojo (desfase de 4 muestras). & Calcular el retardo total (88 muestras) y muestrear con desfase 0. \\
-        Espiga fija en 960.2 MHz (laboratorio) & Componente de continua del receptor sintonizado en $f_c+200$ kHz. & Desplazamiento del oscilador local, de modo que la espiga no cae sobre la señal. \\
-        Saltos de rotación 0/90/180/270° y tramas con CRC erróneo (laboratorio) & Ambigüedad de fase del lazo de portadora tras pérdidas de sincronía. & Correlación de la trama con las cuatro rotaciones; en el diseño BPSK, codificación diferencial. \\
         Valores con punto rechazados en los controles & Configuración regional en español de Windows. & Escribir los decimales con coma (0,3). \\
         \bottomrule
     \end{tabular}
@@ -228,23 +211,5 @@ La Fig.~\ref{fig:ventanas} muestra las ventanas de GNU Radio con las que se obtu
     \label{fig:fase4}
 \end{figure*}
 La Fig.~\ref{fig:fase4} muestra dónde se integró el instrumento. El barrido de ruido se aplica a la señal compleja a 256~kS/s que entra al receptor, y la comparación de bits se hace después de la decodificación diferencial, con la referencia tomada antes del codificador.
-
-\subsection{Evidencias de la práctica de laboratorio}
-\label{app:lab}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{Figuras/lab_tx_espectro.png}
-    \caption{Transmisor HackRF de la práctica de laboratorio: espectro en banda base antes del radio (16-QAM con RRC de roll-off 0.5).}
-    \label{fig:lab_tx}
-\end{figure}
-La Fig.~\ref{fig:lab_tx} muestra el espectro en banda base del transmisor de la práctica. Ocupa unos $\pm6$~kHz, que coinciden con $(1+0.5)\times8$~kHz, y los lóbulos laterales quedan unos 60~dB por debajo.
-
-\begin{figure*}[!t]
-    \centering
-    \includegraphics[width=\textwidth]{Figuras/lab_extra.jpg}
-    \caption{Práctica de laboratorio. Izquierda: receptor con el transmisor detenido (10:30). Derecha: muestras I/Q enviadas al HackRF (2~MS/s) y envolvente compleja antes de escalar.}
-    \label{fig:lab_extra}
-\end{figure*}
-En la Fig.~\ref{fig:lab_extra}, a la izquierda, sin transmisión el espectro solo conserva la componente de continua del receptor en 960.2~MHz y la constelación se convierte en una nube de ruido centrada en el origen; la amplitud de la salida del filtro baja de $\approx0.1$ a $\approx0.004$. A la derecha, las muestras I/Q realmente enviadas al radio tienen un pico cercano a 0.2, por debajo del límite de 1 del conversor, porque la amplitud digital se fijó en 0.15. Así el transmisor trabaja sin saturar y la potencia se ajusta con la ganancia de RF.
 
 \clearpage
